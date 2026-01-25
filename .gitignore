@@ -2,18 +2,36 @@
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/workspace*
-
-# Trash
 .trash/
 
-# macOS
+# OS
 .DS_Store
-
-# Windows
 Thumbs.db
 desktop.ini
 
-# Temporary files
+# Temporary
 *.tmp
 *.swp
 *~
+
+# Build & cache
+node_modules/
+__pycache__/
+*.pyc
+dist/
+build/
+.vscode/
+.idea/
+
+# 竞赛文件夹 - 只保留 md 文件
+04-Competitions/**/*
+!04-Competitions/**/*.md
+!04-Competitions/**/*.pdf
+
+# 但排除竞赛中的大型数据
+04-Competitions/**/benchmark/
+04-Competitions/**/data/
+04-Competitions/**/node_modules/
+*.pptx
+*.docx
+*.xls*
