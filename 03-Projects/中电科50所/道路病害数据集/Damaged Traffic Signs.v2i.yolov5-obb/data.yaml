@@ -1,0 +1,8 @@
+path: ../datasets/roboflow
+
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 9
+names: ['deformation', 'dirty', 'graffiti', 'knocked', 'occluded', 'ok', 'perforation', 'stickers', 'worn']
