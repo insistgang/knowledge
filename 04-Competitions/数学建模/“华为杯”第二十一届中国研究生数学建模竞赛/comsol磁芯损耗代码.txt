@@ -1,0 +1,6 @@
+% Model:              cixinsunhaomoxingcailiao2.mph
+% Version:            COMSOL 6.2.0.290
+% Date:               Sep 25 2024, 00:30
+% Table:              Evaluation 3D - 交互的三维值
+% x                                               y                                                 z                                                 Value
+-4.6884195903373893E-7                            9.680608255706753                                 7.192074396644786                                 0.022586092806300063

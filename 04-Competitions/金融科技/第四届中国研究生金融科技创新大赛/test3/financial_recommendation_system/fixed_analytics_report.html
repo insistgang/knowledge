@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析报告 - 修复版</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .report-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .badge-custom {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-primary { background: #cce7ff; color: #0066cc; }
+        .sample-stat {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>数据分析报告 - 实时版本</h1>
+
+    <button class="btn btn-primary mb-3" onclick="loadRealData()">
+        <i class="fas fa-sync"></i> 加载真实数据
+    </button>
+
+    <button class="btn btn-success mb-3 ms-2" onclick="generateTestData()">
+        <i class="fas fa-dice"></i> 生成测试数据
+    </button>
+
+    <!-- 样本统计 -->
+    <div class="report-section">
+        <h3>样本统计</h3>
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="sample-stat" id="totalSamples">0</div>
+                <div>总样本数</div>
+            </div>
+            <div class="col-md-3">
+                <div class="sample-stat" id="positiveSamples">0</div>
+                <div>正样本</div>
+            </div>
+            <div class="col-md-3">
+                <div class="sample-stat" id="negativeSamples">0</div>
+                <div>负样本</div>
+            </div>
+            <div class="col-md-3">
+                <div class="sample-stat" id="accuracyRate">0%</div>
+                <div>准确率</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 客户价值分析 -->
+    <div class="report-section">
+        <h3>客户价值分析</h3>
+        <div id="customerValueAnalysis">
+            <p class="text-muted">请点击"加载真实数据"</p>
+        </div>
+    </div>
+
+    <!-- 风险评估 -->
+    <div class="report-section">
+        <h3>风险评估</h3>
+        <div id="riskAssessment">
+            <p class="text-muted">请点击"加载真实数据"</p>
+        </div>
+    </div>
+
+    <!-- 产品偏好分析 -->
+    <div class="report-section">
+        <h3>产品偏好分析</h3>
+        <div id="productPreferenceAnalysis">
+            <p class="text-muted">请点击"加载真实数据"</p>
+        </div>
+    </div>
+
+    <!-- 关键洞察 -->
+    <div class="report-section">
+        <h3>关键洞察</h3>
+        <div id="keyInsights">
+            <p class="text-muted">请点击"加载真实数据"</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentCustomer = null;
+        let currentSampleData = null;
+
+        // 加载真实数据
+        async function loadRealData() {
+            try {
+                // 1. 获取客户数据
+                const customerResponse = await fetch(`${API_BASE}/api/customers/CDB91DCCE198B10A522FE2AABF6A8D81`);
+                const customerData = await customerResponse.json();
+                currentCustomer = customerData.customer;
+
+                // 2. 获取样本数据
+                const sampleResponse = await fetch(`${API_BASE}/api/customers/CDB91DCCE198B10A522FE2AABF6A8D81/next-recommendations`);
+                const sampleData = await sampleResponse.json();
+
+                // 3. 更新显示
+                updateDisplay(customerData, sampleData);
+
+                console.log('客户数据:', customerData);
+                console.log('样本数据:', sampleData);
+
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                alert('加载数据失败: ' + error.message);
+            }
+        }
+
+        // 更新显示
+        function updateDisplay(customerData, sampleData) {
+            // 更新样本统计
+            const samples = sampleData.analysis || {};
+            document.getElementById('totalSamples').textContent = samples.totalSamples || 0;
+            document.getElementById('positiveSamples').textContent = samples.positiveSamples || 0;
+            document.getElementById('negativeSamples').textContent = samples.negativeSamples || 0;
+            document.getElementById('accuracyRate').textContent = sampleData.accuracyImprovement?.actual_improvement || '0%';
+
+            // 更新客户价值分析
+            const customer = customerData.customer || {};
+            const valueScore = customer.isHighValue ? 80 : 60;
+            const valueLevel = customer.isHighValue ? '高净值客户' : '普通客户';
+            const potentialGrowth = customer.age < 40 ? '高' : customer.age < 60 ? '中' : '低';
+
+            document.getElementById('customerValueAnalysis').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>客户ID：</strong> ${customer.cust_no || '-'}</p>
+                        <p><strong>年龄：</strong> ${customer.age || '-'}岁</p>
+                        <p><strong>性别：</strong> ${customer.gender === 'M' ? '男' : '女'}</p>
+                        <p><strong>教育背景：</strong> ${customer.edu_bg || '-'}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>价值评分：</strong> <span class="badge badge-custom badge-primary">${valueScore}分</span></p>
+                        <p><strong>客户等级：</strong> ${valueLevel}</p>
+                        <p><strong>资产规模：</strong> ¥${customer.assets ? customer.assets.toLocaleString() : '0'}</p>
+                        <p><strong>年收入：</strong> ¥${customer.annualIncome ? customer.annualIncome.toLocaleString() : '0'}</p>
+                    </div>
+                </div>
+            `;
+
+            // 更新风险评估
+            const riskProfile = customer.riskProfile || {};
+            const riskLevel = riskProfile.overallRisk || 'medium';
+            const riskTolerance = riskLevel === 'low' ? '保守型' : riskLevel === 'high' ? '激进型' : '平衡型';
+
+            document.getElementById('riskAssessment').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>风险等级：</strong> <span class="badge badge-custom ${riskLevel === 'low' ? 'badge-success' : riskLevel === 'high' ? 'badge-danger' : 'badge-warning'}">${riskTolerance}</span></p>
+                        <p><strong>风险偏好：</strong> ${riskTolerance}</p>
+                        <p><strong>风险评分：</strong> ${riskProfile.riskScore || 50}/100</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>投资经验：</strong> ${riskProfile.investmentExperience || '未知'}</p>
+                        <p><strong>投资类型：</strong> ${riskProfile.preferenceType || '未知'}</p>
+                        <p><strong>建议产品：</strong> ${riskLevel === 'low' ? '储蓄类、保障类' : riskLevel === 'high' ? '股票基金、混合基金' : '稳健理财、债券基金'}</p>
+                    </div>
+                </div>
+            `;
+
+            // 更新产品偏好分析
+            const userPrefs = sampleData.analysis?.userPreferences || {};
+            const categoryHtml = userPrefs.preferredCategories ?
+                Object.entries(userPrefs.preferredCategories).map(([cat, count]) =>
+                    `<span class="badge bg-success me-2">${cat}: ${count}</span>`
+                ).join('') : '<p class="text-muted">暂无偏好数据</p>';
+
+            document.getElementById('productPreferenceAnalysis').innerHTML = `
+                <div class="mb-3">
+                    <h5>偏好产品类别：</h5>
+                    ${categoryHtml}
+                </div>
+                <div class="mb-3">
+                    <h5>客户投资建议：</h5>
+                    ${customerData.customerInsight ? `
+                        <p><strong>风险偏好：</strong> ${customerData.customerInsight.riskLevel}</p>
+                        <p><strong>适合类别：</strong> ${customerData.customerInsight.suitableCategories?.join(', ')}</p>
+                        <p><strong>投资能力：</strong> ${customerData.customerInsight.investmentCapacity}</p>
+                        <p><strong>建议：</strong> ${customerData.customerInsight.recommendation}</p>
+                    ` : '<p class="text-muted">暂无建议数据</p>'}
+                </div>
+            `;
+
+            // 更新关键洞察
+            const totalSamples = samples.totalSamples || 0;
+            const positiveRate = samples.positiveSamples ? ((samples.positiveSamples / totalSamples) * 100).toFixed(1) : 0;
+
+            document.getElementById('keyInsights').innerHTML = `
+                <div class="alert alert-info">
+                    <h5>数据洞察</h5>
+                    <ul>
+                        <li>基于 ${totalSamples} 个样本的分析</li>
+                        <li>客户接受度：${positiveRate}%</li>
+                        <li>投资建议：${customerData.customerInsight?.recommendation || '待分析'}</li>
+                        <li>风险偏好：${riskTolerance}</li>
+                    </ul>
+                </div>
+                <div class="alert alert-success">
+                    <h5>策略建议</h5>
+                    <p>1. 重点推荐${customerData.customerInsight?.suitableCategories?.join('、') || '适合客户'}产品</p>
+                    <p>2. 风险等级${riskTolerance}，建议${riskLevel === 'low' ? '保守投资' : riskLevel === 'high' ? '积极配置' : '均衡配置'}</p>
+                    <p>3. 客户${customer.age > 60 ? '适合保本型产品' : '可考虑成长型产品'}</p>
+                </div>
+            `;
+        }
+
+        // 生成测试数据
+        function generateTestData() {
+            const totalSamples = Math.floor(Math.random() * 100) + 50;
+            const positiveSamples = Math.floor(totalSamples * (0.4 + Math.random() * 0.3));
+
+            document.getElementById('totalSamples').textContent = totalSamples;
+            document.getElementById('positiveSamples').textContent = positiveSamples;
+            document.getElementById('negativeSamples').textContent = totalSamples - positiveSamples;
+            document.getElementById('accuracyRate').textContent = (Math.random() * 40 + 30).toFixed(1) + '%';
+
+            document.getElementById('customerValueAnalysis').innerHTML = `
+                <p class="text-info">这是测试数据，点击"加载真实数据"查看实际数据</p>
+            `;
+
+            document.getElementById('riskAssessment').innerHTML = `
+                <p class="text-info">这是测试数据，点击"加载真实数据"查看实际数据</p>
+            `;
+
+            document.getElementById('productPreferenceAnalysis').innerHTML = `
+                <p class="text-info">这是测试数据，点击"加载真实数据"查看实际数据</p>
+            `;
+
+            document.getElementById('keyInsights').innerHTML = `
+                <p class="text-info">这是测试数据，点击"加载真实数据"查看实际数据</p>
+            `;
+        }
+
+        // 页面加载时自动加载真实数据
+        window.onload = function() {
+            setTimeout(loadRealData, 500);
+        };
+    </script>
+</body>
+</html>

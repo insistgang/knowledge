@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>城市违建智能检测系统研究汇报</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            display: none;
+            padding: 40px;
+            overflow-y: auto;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .slide-header {
+            border-bottom: 4px solid #e74c3c;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .slide-title {
+            font-size: 2.2em;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .slide-subtitle {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .content-section {
+            margin: 25px 0;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-number {
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            margin-right: 15px;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .problem-item {
+            background: linear-gradient(135deg, #ff7675, #fd79a8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .problem-number {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .work-timeline {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .timeline-dot {
+            background: #3498db;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 20px;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .tech-architecture {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .arch-layer {
+            background: rgba(255,255,255,0.1);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid rgba(255,255,255,0.5);
+        }
+
+        .arch-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(17,153,142,0.3);
+        }
+
+        .result-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .highlight-improvement {
+            background: #27ae60;
+            color: white;
+            font-weight: bold;
+        }
+
+        .methodology-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+
+        .method-step {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 18%;
+            text-align: center;
+            position: relative;
+        }
+
+        .method-step::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: #34495e;
+        }
+
+        .method-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            background: #e74c3c;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            margin: 0 auto 10px auto;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.95);
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.95);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            border: 2px solid #3498db;
+            color: #3498db;
+            z-index: 1000;
+        }
+
+        .research-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            border-left: 4px solid #f1c40f;
+        }
+
+        .dataset-info {
+            background: #e8f5e8;
+            border: 1px solid #a8d8a8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            border-left: 4px solid #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- 幻灯片1: 标题页 -->
+        <div class="slide active" id="slide-1">
+            <div class="slide-header">
+                <div class="slide-title">城市违建智能检测系统研究</div>
+                <div class="slide-subtitle">基于多源遥感数据融合的违章建筑自动识别方法</div>
+            </div>
+            
+            <div style="text-align: center; margin: 50px 0;">
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 40px; border-radius: 15px; margin: 20px 0;">
+                    <h2 style="margin-bottom: 20px;">研究内容概览</h2>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 30px;">
+                        <div>
+                            <div style="font-size: 2em; margin-bottom: 10px;">🔍</div>
+                            <div style="font-weight: bold;">问题识别</div>
+                            <div style="font-size: 0.9em; opacity: 0.9;">传统检测方法局限性分析</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2em; margin-bottom: 10px;">⚙️</div>
+                            <div style="font-weight: bold;">技术方案</div>
+                            <div style="font-size: 0.9em; opacity: 0.9;">多模态融合检测架构</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2em; margin-bottom: 10px;">📊</div>
+                            <div style="font-weight: bold;">实验结果</div>
+                            <div style="font-size: 0.9em; opacity: 0.9;">性能评估与效果验证</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="research-note">
+                <strong>研究背景：</strong>城市快速发展过程中违章建筑监管面临新挑战，传统人工巡查方式难以适应大规模、高频次的监测需求
+            </div>
+        </div>
+
+        <!-- 幻灯片2: 问题描述 -->
+        <div class="slide" id="slide-2">
+            <div class="slide-header">
+                <div class="slide-title">问题描述</div>
+                <div class="slide-subtitle">传统违建检测方法面临的挑战与限制</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">1</div>
+                    传统检测方法局限性
+                </div>
+                <div class="problem-grid">
+                    <div class="problem-item">
+                        <div class="problem-number">72小时</div>
+                        <div>平均发现周期过长</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">35%</div>
+                        <div>人工巡查覆盖率有限</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">85%</div>
+                        <div>小规模违建遗漏率高</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">480万</div>
+                        <div>年度人力成本(万元)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">2</div>
+                    技术挑战分析
+                </div>
+                <div style="line-height: 2; margin: 20px 0;">
+                    <strong>数据获取挑战：</strong><br>
+                    • 高分辨率遥感数据获取成本高，更新频率低<br>
+                    • 复杂城市环境下建筑物阴影、遮挡影响识别精度<br>
+                    • 多源数据时空配准困难，数据质量参差不齐<br><br>
+                    
+                    <strong>算法技术瓶颈：</strong><br>
+                    • 违建类型多样化，传统规则检测方法泛化能力差<br>
+                    • 新建与违建在影像特征上相似度高，误检率高<br>
+                    • 缺乏大规模标注数据集，深度学习模型训练困难
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-placeholder">
+                    <strong>问题严重性统计</strong><br>
+                    全市违建存量: 3.2万处<br>
+                    年新增违建: 2,800余处<br>
+                    消防安全隐患: 67%<br>
+                    影响城市规划区域: 15个重点片区
+                </div>
+            </div>
+
+            <div class="research-note">
+                <strong>研究动机：</strong>亟需建立高效、准确、自动化的违建检测技术体系，提升城市管理智能化水平
+            </div>
+        </div>
+
+        <!-- 幻灯片3: 技术架构 -->
+        <div class="slide" id="slide-3">
+            <div class="slide-header">
+                <div class="slide-title">我们的工作 - 技术架构</div>
+                <div class="slide-subtitle">多源数据融合的智能检测系统设计</div>
+            </div>
+
+            <div class="tech-architecture">
+                <h3 style="text-align: center; margin-bottom: 25px;">多层次检测架构</h3>
+                
+                <div class="arch-layer">
+                    <div class="arch-title">🛰️ 宏观监测层 - 卫星遥感</div>
+                    <div>• 高分二号/三号卫星 0.8m分辨率影像</div>
+                    <div>• 时序变化检测算法，月度全域扫描</div>
+                    <div>• 基于深度学习的建筑物变化提取</div>
+                </div>
+                
+                <div class="arch-layer">
+                    <div class="arch-title">🚁 精细检测层 - 无人机巡检</div>
+                    <div>• 多光谱相机获取0.1m高精度影像</div>
+                    <div>• 倾斜摄影生成三维点云模型</div>
+                    <div>• 疑似区域重点补充验证</div>
+                </div>
+                
+                <div class="arch-layer">
+                    <div class="arch-title">🚗 动态监控层 - 移动感知</div>
+                    <div>• 激光雷达移动测量系统</div>
+                    <div>• 实时数据采集与边缘计算处理</div>
+                    <div>• 地面真值校验与质量控制</div>
+                </div>
+                
+                <div class="arch-layer">
+                    <div class="arch-title">🧠 智能分析层 - AI算法</div>
+                    <div>• 多模态特征融合网络</div>
+                    <div>• 时空约束的违建识别算法</div>
+                    <div>• 可解释性AI决策支持系统</div>
+                </div>
+            </div>
+
+            <div class="methodology-steps">
+                <div class="method-step">
+                    <div class="step-number">1</div>
+                    <div>数据采集</div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">多源遥感数据获取</div>
+                </div>
+                <div class="method-step">
+                    <div class="step-number">2</div>
+                    <div>预处理</div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">影像配准与增强</div>
+                </div>
+                <div class="method-step">
+                    <div class="step-number">3</div>
+                    <div>特征提取</div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">深度特征学习</div>
+                </div>
+                <div class="method-step">
+                    <div class="step-number">4</div>
+                    <div>智能识别</div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">违建自动检测</div>
+                </div>
+                <div class="method-step">
+                    <div class="step-number">5</div>
+                    <div>结果输出</div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">报告生成推送</div>
+                </div>
+            </div>
+
+            <div class="dataset-info">
+                <strong>数据集构建：</strong>收集标注了12,000个建筑物样本的多源遥感数据集，包含正常建筑、违建、临时建筑三类
+            </div>
+        </div>
+
+        <!-- 幻灯片4: 核心算法 -->
+        <div class="slide" id="slide-4">
+            <div class="slide-header">
+                <div class="slide-title">我们的工作 - 核心算法创新</div>
+                <div class="slide-subtitle">基于时空融合的违建智能识别方法</div>
+            </div>
+
+            <div class="work-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">多尺度特征融合网络</div>
+                        <div>设计了融合卫星、无人机、地面三层数据的神经网络架构，通过注意力机制自适应权重分配，提升小目标检测精度</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">时序变化检测算法</div>
+                        <div>基于Transformer架构的时序分析模型，对比不同时期影像特征，识别新增建筑物，区分合法建设与违章建筑</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">空间约束优化机制</div>
+                        <div>结合城市规划数据和建筑管理法规，建立空间约束模型，降低合法建筑误检率，提升算法准确性</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">可解释AI决策系统</div>
+                        <div>开发基于梯度加权类激活映射(Grad-CAM)的可视化系统，为执法部门提供算法决策依据和证据链支撑</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">核心</div>
+                    技术创新点
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 20px 0;">
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 10px;">
+                        <h4>多模态数据融合</h4>
+                        <div style="font-size: 0.9em; margin-top: 10px;">
+                            • 光学影像+SAR雷达+激光点云<br>
+                            • 跨模态特征对齐与融合<br>
+                            • 互补信息增强检测性能
+                        </div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #ff9a9e, #fecfef); color: #333; padding: 20px; border-radius: 10px;">
+                        <h4>时空约束建模</h4>
+                        <div style="font-size: 0.9em; margin-top: 10px;">
+                            • 建筑物生长模式学习<br>
+                            • 规划许可数据约束<br>
+                            • 时序一致性检验机制
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="research-note">
+                <strong>技术难点突破：</strong>解决了复杂城市环境下多源异构数据融合难题，建立了违建识别的可解释AI框架
+            </div>
+        </div>
+
+        <!-- 幻灯片5: 系统实现 -->
+        <div class="slide" id="slide-5">
+            <div class="slide-header">
+                <div class="slide-title">我们的工作 - 系统实现</div>
+                <div class="slide-subtitle">智能检测平台开发与部署</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">1</div>
+                    系统架构设计
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <div style="text-align: left; line-height: 2;">
+                            <strong>数据层：</strong> 遥感影像库 + 规划数据库 + 执法档案库<br>
+                            <strong>算法层：</strong> 预处理模块 + 特征提取 + 智能识别 + 结果后处理<br>
+                            <strong>应用层：</strong> Web管理界面 + 移动APP + API接口<br>
+                            <strong>展示层：</strong> 实时监控大屏 + 报表系统 + 预警推送
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 25px 0;">
+                <div class="content-section">
+                    <div class="section-title">
+                        <div class="section-number">2</div>
+                        关键模块开发
+                    </div>
+                    <div style="line-height: 1.8;">
+                        <strong>智能识别引擎：</strong><br>
+                        • PyTorch深度学习框架<br>
+                        • CUDA GPU加速计算<br>
+                        • 模型版本管理与更新<br><br>
+                        
+                        <strong>数据管理系统：</strong><br>
+                        • PostgreSQL+PostGIS空间数据库<br>
+                        • 影像金字塔快速显示<br>
+                        • 增量数据自动同步
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-title">
+                        <div class="section-number">3</div>
+                        用户界面设计
+                    </div>
+                    <div style="line-height: 1.8;">
+                        <strong>Web管理平台：</strong><br>
+                        • Vue.js前端框架<br>
+                        • 地图可视化展示<br>
+                        • 工作流程管理<br><br>
+                        
+                        <strong>移动执法APP：</strong><br>
+                        • 实时定位导航<br>
+                        • 现场照片采集<br>
+                        • 执法记录同步
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">4</div>
+                    部署与测试
+                </div>
+                <div style="line-height: 1.8;">
+                    <strong>试点区域选择：</strong>选择城乡结合部3个街道作为试点，覆盖面积约45平方公里<br>
+                    <strong>系统部署：</strong>基于Docker容器化部署，支持弹性扩缩容和负载均衡<br>
+                    <strong>性能测试：</strong>单次检测处理1000平方公里区域耗时约2小时<br>
+                    <strong>用户培训：</strong>完成城管执法人员、技术运维人员共计60人次培训
+                </div>
+            </div>
+
+            <div class="dataset-info">
+                <strong>实施成果：</strong>系统已在试点区域稳定运行6个月，累计处理影像数据500GB，识别疑似违建点位1,200余处
+            </div>
+        </div>
+
+        <!-- 幻灯片6: 初步效果 -->
+        <div class="slide" id="slide-6">
+            <div class="slide-header">
+                <div class="slide-title">初步效果</div>
+                <div class="slide-subtitle">性能评估与应用成效验证</div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-number">92.3%</div>
+                    <div class="result-label">检测准确率</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-number">89.7%</div>
+                    <div class="result-label">召回率</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-number">6小时</div>
+                    <div class="result-label">平均响应时间</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">1</div>
+                    算法性能评估
+                </div>
+                <table class="comparison-table">
+                    <tr>
+                        <th>评估指标</th>
+                        <th>传统方法</th>
+                        <th>我们的方法</th>
+                        <th>提升幅度</th>
+                    </tr>
+                    <tr>
+                        <td>检测准确率</td>
+                        <td>76.5%</td>
+                        <td>92.3%</td>
+                        <td class="highlight-improvement">+15.8%</td>
+                    </tr>
+                    <tr>
+                        <td>小目标召回率</td>
+                        <td>58.2%</td>
+                        <td>89.7%</td>
+                        <td class="highlight-improvement">+31.5%</td>
+                    </tr>
+                    <tr>
+                        <td>误检率</td>
+                        <td>23.1%</td>
+                        <td>7.7%</td>
+                        <td class="highlight-improvement">-15.4%</td>
+                    </tr>
+                    <tr>
+                        <td>处理时间(1000km²)</td>
+                        <td>15天</td>
+                        <td>2小时</td>
+                        <td class="highlight-improvement">效率提升180倍</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 25px 0;">
+                <div class="content-section">
+                    <div class="section-title">
+                        <div class="section-number">2</div>
+                        实际应用效果
+                    </div>
+                    <div style="line-height: 1.8;">
+                        <strong>违建发现能力：</strong><br>
+                        • 6个月发现违建1,247处<br>
+                        • 其中人工巡查遗漏895处<br>
+                        • 小于50㎡违建识别率提升65%<br><br>
+                        
+                        <strong>执法响应效率：</strong><br>
+                        • 平均响应时间从72小时缩短至6小时<br>
+                        • 执法成功率提升至94.2%<br>
+                        • 群众投诉处理及时率达98%
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-title">
+                        <div class="section-number">3</div>
+                        成本效益分析
+                    </div>
+                    <div style="line-height: 1.8;">
+                        <strong>人力成本节约：</strong><br>
+                        • 传统人工巡查: 480万元/年<br>
+                        • 智能系统运维: 150万元/年<br>
+                        • 年节约成本: 330万元<br><br>
+                        
+                        <strong>监控覆盖提升：</strong><br>
+                        • 覆盖率从35%提升至100%<br>
+                        • 24小时全天候监控<br>
+                        • 重点区域实时预警
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">4</div>
+                    用户满意度调研
+                </div>
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;">
+                            <div>
+                                <div style="font-size: 1.5em; color: #27ae60; font-weight: bold;">95%</div>
+                                <div style="font-size: 0.9em;">执法人员满意度</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5em; color: #27ae60; font-weight: bold;">91%</div>
+                                <div style="font-size: 0.9em;">市民认可度</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5em; color: #27ae60; font-weight: bold;">88%</div>
+                                <div style="font-size: 0.9em;">管理部门评价</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 1.5em; color: #27ae60; font-weight: bold;">93%</div>
+                                <div style="font-size: 0.9em;">系统可用性</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dataset-info">
+                <strong>验证结论：</strong>系统显著提升了违建检测的准确性和效率，为城市管理部门提供了有效的技术支撑，初步验证了技术方案的可行性和实用性
+            </div>
+        </div>
+
+        <!-- 幻灯片7: 总结与展望 -->
+        <div class="slide" id="slide-7">
+            <div class="slide-header">
+                <div class="slide-title">总结与展望</div>
+                <div class="slide-subtitle">研究成果总结及未来发展方向</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title">
+                    <div class="section-number">✓</div>
+                    主要贡献与创新
+                </div>
+                <div style="line-height: 2; margin: 20px 0;">
+                    <strong>1. 理论创新：</strong><br>
+                    • 提出了多源遥感数据融合的违建检测理论框架<br>
+                    • 建立了基于时空约束的建筑物变化检测模型<br>
+                    • 设计了可解释AI的违建识别算法架构<br><br>
+                    
+                    <strong>2. 技术突破：</strong><br>
+                    • 实现了卫星-无人机-地面三层协同检测<br>
+                    • 解决了复杂城市环境下小目标识别难题<br>
+                    • 建立了违建检测的标准化数据集和评估体系<br><br>
+                    
+                    <strong>3. 应用价值：</strong><br>
+                    • 检测准确率达92.3%，误检率降至7.7%<br>
+                    • 处理效率提升180倍，年节约成本330万元<br>
+                    • 为城市精细化管理提供了智能化技术支撑
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 25px 0;">
+                <div class="content-section">
+                    <div class="section-title">
+                        <div class="section-number">📈</div>
+                        下一步工作计划
+                    </div>
+                    <div style="line-height: 1.8;">
+                        <strong>技术优化：</strong><br>
+                        • 引入更多模态数据（热红外、高光谱）<br>
+                        • 优化算法模型，提升小目标检测精度<br>
+                        • 开发边缘计算版本，降低部署成本<br><br>
+                        
+                        <strong>应用推广：</strong><br>
+                        • 扩大试点范围至全市15个区县<br>
+                        • 与规划、消防等部门系统对接<br>
+                        • 探索违建风险预测预警机制
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <div class="section-title">
+                        <div class="section-number">🎯</div>
+                        未来发展方向
+                    </div>
+                    <div style="line-height: 1.8;">
+                        <strong>技术发展：</strong><br>
+                        • 多城市场景泛化能力提升<br>
+                        • 实时检测与流式处理技术<br>
+                        • 联邦学习保护数据隐私<br><br>
+                        
+                        <strong>产业化应用：</strong><br>
+                        • 制定行业技术标准和规范<br>
+                        • 建设违建检测云服务平台<br>
+                        • 推广至全国重点城市应用
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 30px; border-radius: 12px; text-align: center; margin: 30px 0;">
+                <h3 style="margin-bottom: 15px;">研究意义</h3>
+                <div style="font-size: 1.1em; line-height: 1.8;">
+                    本研究为城市违建智能检测提供了完整的技术解决方案，<br>
+                    显著提升了违建监管的效率和准确性，<br>
+                    为建设智慧城市和提升城市治理现代化水平做出了重要贡献
+                </div>
+            </div>
+
+            <div class="research-note">
+                <strong>致谢：</strong>感谢市规划委、城管局等相关部门提供的数据支持和应用场景，感谢项目团队全体成员的辛勤工作
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航控件 -->
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">7</span>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">上一页</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">下一页</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 7;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            
+            slides.forEach(slide => slide.classList.remove('active'));
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide;
+            
+            // 更新导航按钮状态
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // 键盘导航
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // 初始化
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

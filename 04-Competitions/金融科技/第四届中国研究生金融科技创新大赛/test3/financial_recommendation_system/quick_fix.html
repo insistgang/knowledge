@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>快速修复 - 数据分析</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn:hover { opacity: 0.9; }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .info-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .alert-info { background: #d1ecf1; color: #0c5460; }
+        .alert-success { background: #d4edda; color: #155724; }
+        pre {
+            background: #f1f3f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>智能推荐系统 - 数据分析（快速修复版）</h1>
+
+        <div style="margin-bottom: 20px;">
+            <button class="btn btn-primary" onclick="loadRealData()">
+                1. 加载客户数据
+            </button>
+            <button class="btn btn-primary" onclick="loadSampleData()">
+                2. 加载样本数据
+            </button>
+            <button class="btn btn-success" onclick="submitTestFeedback()">
+                3. 提交测试反馈
+            </button>
+        </div>
+
+        <!-- 样本统计 -->
+        <div class="card">
+            <h3>样本统计</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalSamples">0</div>
+                    <div class="stat-label">总样本数</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="positiveSamples">0</div>
+                    <div class="stat-label">正样本</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="negativeSamples">0</div>
+                    <div class="stat-label">负样本</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="accuracyRate">0%</div>
+                    <div class="stat-label">准确率</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户信息 -->
+        <div class="card">
+            <h3>客户信息</h3>
+            <div id="customerInfo">
+                <p class="alert alert-info">点击"加载客户数据"查看信息</p>
+            </div>
+        </div>
+
+        <!-- 投资建议 -->
+        <div class="card">
+            <h3>投资建议</h3>
+            <div id="investmentAdvice">
+                <p class="alert alert-info">点击"加载客户数据"查看建议</p>
+            </div>
+        </div>
+
+        <!-- 数据分析报告 -->
+        <div class="card">
+            <h3>数据分析报告</h3>
+            <div id="dataAnalysis">
+                <p class="alert alert-info">加载客户和样本数据后生成报告</p>
+            </div>
+        </div>
+
+        <!-- API响应日志 -->
+        <div class="card">
+            <h3>API响应日志</h3>
+            <pre id="apiLog">等待加载数据...</pre>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentCustomer = null;
+
+        function log(message, data = null) {
+            const logEl = document.getElementById('apiLog');
+            const timestamp = new Date().toLocaleTimeString();
+            let logText = `[${timestamp}] ${message}\n`;
+            if (data) {
+                logText += JSON.stringify(data, null, 2);
+            }
+            logEl.textContent += logText + '\n\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        // 加载客户数据
+        async function loadRealData() {
+            log('开始加载客户数据...');
+            try {
+                const response = await fetch(`${API_BASE}/api/customers/CDB91DCCE198B10A522FE2AABF6A8D81`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentCustomer = data.customer;
+                    log('✓ 客户数据加载成功', data);
+
+                    // 更新客户信息显示
+                    document.getElementById('customerInfo').innerHTML = `
+                        <div class="info-item"><strong>客户ID：</strong> ${data.customer.cust_no}</div>
+                        <div class="info-item"><strong>年龄：</strong> ${data.customer.age}岁</div>
+                        <div class="info-item"><strong>性别：</strong> ${data.customer.gender === 'M' ? '男' : '女'}</div>
+                        <div class="info-item"><strong>教育背景：</strong> ${data.customer.edu_bg}</div>
+                        <div class="info-item"><strong>婚姻状况：</strong> ${data.customer.marriage_situ_cd}</div>
+                        <div class="info-item">
+                            <strong>客户价值：</strong>
+                            <span class="badge ${data.customer.isHighValue ? 'badge-success' : 'badge-warning'}">
+                                ${data.customer.isHighValue ? '高价值客户' : '普通客户'}
+                            </span>
+                        </div>
+                        <div class="info-item"><strong>年收入：</strong> ¥${data.customer.annualIncome?.toLocaleString() || '0'}</div>
+                        <div class="info-item"><strong>总资产：</strong> ¥${data.customer.assets?.toLocaleString() || '0'}</div>
+                    `;
+
+                    // 更新投资建议
+                    if (data.customerInsight) {
+                        document.getElementById('investmentAdvice').innerHTML = `
+                            <div class="info-item"><strong>风险偏好：</strong> ${data.customerInsight.riskLevel}</div>
+                            <div class="info-item"><strong>适合类别：</strong> ${data.customerInsight.suitableCategories?.join(', ') || '未知'}</div>
+                            <div class="info-item"><strong>投资能力：</strong> ${data.customerInsight.investmentCapacity}</div>
+                            <div class="alert alert-success">
+                                <strong>建议：</strong> ${data.customerInsight.recommendation}
+                            </div>
+                        `;
+                    }
+
+                    // 更新样本数（显示已有的）
+                    document.getElementById('totalSamples').textContent = data.sampleCount || 0;
+
+                } else {
+                    throw new Error('客户不存在');
+                }
+            } catch (error) {
+                log('✗ 加载失败', error.message);
+            }
+        }
+
+        // 加载样本数据
+        async function loadSampleData() {
+            if (!currentCustomer) {
+                alert('请先加载客户数据');
+                return;
+            }
+
+            log('开始加载样本数据...');
+            try {
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.cust_no}/next-recommendations`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    log('✓ 样本数据加载成功', data);
+
+                    // 更新样本统计
+                    const samples = data.analysis || {};
+                    document.getElementById('totalSamples').textContent = samples.totalSamples || 0;
+                    document.getElementById('positiveSamples').textContent = samples.positiveSamples || 0;
+                    document.getElementById('negativeSamples').textContent = samples.negativeSamples || 0;
+
+                    // 更新准确率
+                    const accuracy = data.accuracyImprovement?.actual_improvement || '待计算';
+                    document.getElementById('accuracyRate').textContent = accuracy;
+
+                    // 生成数据分析报告
+                    generateDataReport(data);
+
+                } else {
+                    throw new Error('获取样本数据失败');
+                }
+            } catch (error) {
+                log('✗ 加载失败', error.message);
+            }
+        }
+
+        // 提交测试反馈
+        async function submitTestFeedback() {
+            if (!currentCustomer) {
+                alert('请先加载客户数据');
+                return;
+            }
+
+            log('开始提交测试反馈...');
+            try {
+                const feedbackData = {
+                    feedback: [{
+                        productId: 'SAVE_NEW_001',
+                        productName: '大额存单',
+                        feedback: 'interested'
+                    }]
+                };
+
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.cust_no}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(feedbackData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log('✓ 反馈提交成功', data);
+                    alert('反馈提交成功！');
+
+                    // 自动更新样本统计
+                    const samples = data.samples || {};
+                    document.getElementById('totalSamples').textContent = samples.totalSamples || 0;
+                    document.getElementById('positiveSamples').textContent = samples.positiveSamples || 0;
+                    document.getElementById('negativeSamples').textContent = samples.negativeSamples || 0;
+
+                    // 更新准确率
+                    const accuracy = data.accuracyImprovement?.actual_improvement || '待计算';
+                    document.getElementById('accuracyRate').textContent = accuracy;
+
+                    // 重新加载样本数据
+                    setTimeout(loadSampleData, 1000);
+
+                } else {
+                    throw new Error(data.error || '提交失败');
+                }
+            } catch (error) {
+                log('✗ 提交失败', error.message);
+            }
+        }
+
+        // 生成数据分析报告
+        function generateDataReport(data) {
+            const analysis = data.analysis || {};
+            const total = analysis.totalSamples || 0;
+            const positive = analysis.positiveSamples || 0;
+            const negative = analysis.negativeSamples || 0;
+
+            const reportHtml = `
+                <div class="alert alert-info">
+                    <h4>数据概览</h4>
+                    <p>基于 <strong>${total}</strong> 个样本的分析</p>
+                    <p>正样本率：<strong>${total > 0 ? ((positive/total)*100).toFixed(1) : 0}%</strong></p>
+                    <p>负样本率：<strong>${total > 0 ? ((negative/total)*100).toFixed(1) : 0}%</strong></p>
+                </div>
+
+                <div class="alert alert-success">
+                    <h4>关键发现</h4>
+                    ${total > 0 ? `
+                        <ul>
+                            <li>客户对推荐产品的接受度为 ${((positive/total)*100).toFixed(1)}%</li>
+                            <li>准确率提升：${data.accuracyImprovement?.actual_improvement || '待计算'}</li>
+                            <li>下一步策略：${data.nextStep || '继续收集更多数据'}</li>
+                        </ul>
+                    ` : '<p>暂无足够数据进行分析</p>'}
+                </div>
+
+                ${data.userPreferences ? `
+                    <div class="alert alert-info">
+                        <h4>用户偏好分析</h4>
+                        <p>风险偏好：${data.userPreferences.riskPreference || '未知'}</p>
+                        <p>投资行为：${data.userPreferences.investmentBehavior || '未知'}</p>
+                        <p>偏好类别：${Object.keys(data.userPreferences.preferredCategories || {}).join(', ') || '暂无'}</p>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('dataAnalysis').innerHTML = reportHtml;
+        }
+
+        // 页面加载完成后自动加载
+        window.onload = function() {
+            log('页面加载完成');
+        };
+    </script>
+</body>
+</html>

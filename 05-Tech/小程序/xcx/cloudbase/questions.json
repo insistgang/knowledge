@@ -1,0 +1,18 @@
+生成拼音题...
+C:\Users\Administrator\Desktop\code\xcx\scripts\generateQuestions.js:398
+          B: `${pinyinData.words[(index + 1) % 40].word}（${pinyinData.words[(index + 1) % 40].pinyin}）`,
+                                                   ^
+
+TypeError: Cannot read properties of undefined (reading 'word')
+    at QuestionGenerator.createPinyinQuestion (C:\Users\Administrator\Desktop\code\xcx\scripts\generateQuestions.js:398:52)
+    at QuestionGenerator.generatePinyinQuestions (C:\Users\Administrator\Desktop\code\xcx\scripts\generateQuestions.js:349:27)
+    at QuestionGenerator.generateAll (C:\Users\Administrator\Desktop\code\xcx\scripts\generateQuestions.js:882:31)
+    at Object.<anonymous> (C:\Users\Administrator\Desktop\code\xcx\scripts\generateQuestions.js:945:32)
+    at Module._compile (node:internal/modules/cjs/loader:1256:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)
+    at Module.load (node:internal/modules/cjs/loader:1119:32)
+    at Module._load (node:internal/modules/cjs/loader:960:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:86:12)
+    at node:internal/main/run_main_module:23:47
+
+Node.js v18.18.2

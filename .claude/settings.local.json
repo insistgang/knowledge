@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-Date -Format \"yyyy-MM-dd\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(copy:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(python:*)",
+      "Bash(# 对比 Inbox 和 04-Competitions 中的重复项 echo \"\"=== 重复检测 ===\"\" echo \"\"\"\" echo \"\"Inbox 中的竞赛文件夹：\"\" ls -d \"\"E:/000/knowledge/00-Inbox/\"\"*/)",
+      "Bash(xargs:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(powershell:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(python3 -c:*)",
+      "Bash(# 查找所有 node_modules 文件夹 find \"\"E:/000/knowledge/04-Competitions\"\" -type d -name \"\"node_modules\"\")",
+      "Bash(# 看几个课程文件夹的内容示例 echo \"\"=== 机器学习 ===\"\" && ls \"\"E:/000/knowledge/00-Inbox/学位课/机器学习/\"\")",
+      "Bash(du:*)",
+      "Bash(# 删除所有嵌套的 .git 文件夹 rm -rf \"\"E:/000/knowledge/02-Thesis/Experiments/Dataset-for-illegal-buildings-detection-from-satellite/.git\"\" rm -rf \"\"E:/000/knowledge/05-Tech/小程序/xcx/.git\"\" # 检查是否还有其他嵌套的 .git find \"\"E:/000/knowledge\"\" -name \"\".git\"\" -type d)",
+      "Bash(git config:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rm:*)",
+      "Bash(git remote add:*)"
+    ]
+  }
+}

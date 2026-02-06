@@ -1,0 +1,135 @@
+/**
+ * 学习分析样式
+ */
+@import '../../styles/variables.less';
+
+.study-analysis-page {
+  min-height: 100vh;
+  background: @bg-color;
+}
+
+.content-scroll {
+  height: 100vh;
+  padding: @spacing-md;
+}
+
+.analysis-section {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  margin-bottom: @spacing-md;
+  box-shadow: @shadow-sm;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: @spacing-lg;
+}
+
+.section-title.with-icon {
+  gap: @spacing-sm;
+}
+
+.title-icon {
+  font-size: 32px;
+}
+
+/* 标签 */
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: @spacing-sm;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: @radius-full;
+  font-size: @font-size-base;
+}
+
+.tag-item.good {
+  background: fade(@success-color, 10%);
+  color: @success-color;
+}
+
+.tag-item.weak {
+  background: fade(@danger-color, 10%);
+  color: @danger-color;
+}
+
+.tag-icon {
+  margin-right: 6px;
+}
+
+/* 趋势 */
+.trend-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: @spacing-xl;
+  background: @bg-color;
+  border-radius: @radius-md;
+}
+
+.trend-icon {
+  font-size: 64px;
+  margin-bottom: @spacing-sm;
+}
+
+.trend-text {
+  font-size: @font-size-lg;
+  color: @text-color-primary;
+  font-weight: 600;
+}
+
+/* 建议 */
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-md;
+}
+
+.suggestion-item {
+  padding: @spacing-lg;
+  background: @bg-color;
+  border-radius: @radius-md;
+}
+
+.suggestion-header {
+  display: flex;
+  align-items: center;
+  gap: @spacing-sm;
+  margin-bottom: 8px;
+}
+
+.suggestion-num {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @primary-color;
+  color: @white;
+  border-radius: 50%;
+  font-size: @font-size-sm;
+  font-weight: 600;
+}
+
+.suggestion-title {
+  font-size: @font-size-base;
+  font-weight: 600;
+  color: @text-color-primary;
+}
+
+.suggestion-desc {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  line-height: 1.6;
+  padding-left: 40px;
+}

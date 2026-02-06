@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<style>
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft YaHei", Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.canvas {
+    width: 100%;
+    max-width: 1600px; 
+    margin: 20px auto;
+    font-family: "Microsoft YaHei", Arial, sans-serif;
+}
+
+.title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr 1fr; 
+    grid-gap: 8px; /* 减小模块间距 */
+}
+
+.box {
+    padding: 12px; /* 适当减小内边距 */
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.box h3 {
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.box h4 {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.box ul {
+    list-style-type: none;
+    padding-left: 5px;
+    margin: 0;
+}
+
+.box li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 18px;
+    line-height: 1.3; /* 调整行高 */
+}
+
+.box li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* 颜色方案 - 调整对比度 */
+.partners {
+    background-color: #D6EAF8;
+    color: #333;
+}
+
+.core-activities {
+    background-color: #D5F5E3;
+    color: #333;
+}
+
+.core-resources {
+    background-color: #FCF3CF;
+    color: #333;
+}
+
+.value-prop {
+    background-color: #FADBD8;
+    grid-column: 2;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.value-sections {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #ccc; /* 添加分割线 */
+    padding-top: 10px;
+}
+
+.value-section {
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+.value-section:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.revenue {
+    background-color: #EBDEF0;
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.customer-relations {
+    background-color: #D6EAF8;
+    color: #333;
+}
+
+.channels {
+    background-color: #FCF3CF;
+    color: #333;
+}
+
+.customer-segments {
+    background-color: #F5EEF8;
+    color: #333;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="canvas">
+    <div class="title">低空经济无人机物流商业模式画布</div>
+
+    <div class="grid-container">
+        <!-- 核心合作伙伴 -->
+        <div class="box partners">
+            <h3>核心合作伙伴</h3>
+            <ul>
+                <li>低空卫星网络运营商</li>
+                <li>无人机制造商</li>
+                <li>电商平台</li>
+                <li>物业管理公司</li>
+                <li>地方政府监管部门</li>
+                <li>餐饮/生鲜/医药供应商</li>
+            </ul>
+        </div>
+
+        <!-- 价值主张 -->
+        <div class="box value-prop">
+            <h3>价值主张</h3>
+            <div class="value-sections">
+                <div class="value-section">
+                    <h4>对消费者：</h4>
+                    <ul>
+                        <li>极速配送：最快15分钟内完成</li>
+                        <li>高可靠性：全天候服务</li>
+                        <li>灵活便捷：精准预约送达</li>
+                    </ul>
+                </div>
+
+                <div class="value-section">
+                    <h4>对商家：</h4>
+                    <ul>
+                        <li>降低配送成本：减少人力成本</li>
+                        <li>提升客户满意度：准时送达</li>
+                        <li>扩大服务半径：覆盖更广区域</li>
+                    </ul>
+                </div>
+
+                <div class="value-section">
+                    <h4>对城市：</h4>
+                    <ul>
+                        <li>缓解交通压力：减少地面车辆</li>
+                        <li>提升物流效率</li>
+                        <li>应急保障：灾害时物资配送</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户关系 -->
+        <div class="box customer-relations">
+            <h3>客户关系</h3>
+            <ul>
+                <li>自助服务：移动应用</li>
+                <li>社区互动：用户反馈</li>
+                <li>个性化推荐</li>
+                <li>企业客户专属服务</li>
+                <li>全程透明可视化</li>
+            </ul>
+        </div>
+
+        <!-- 核心业务 -->
+        <div class="box core-activities">
+            <h3>核心业务</h3>
+            <ul>
+                <li>无人机物流配送服务</li>
+                <li>智能调度系统运营</li>
+                <li>微仓网络管理</li>
+                <li>设备维护与升级</li>
+                <li>定制化配送方案开发</li>
+            </ul>
+        </div>
+
+        <!-- 渠道通路 -->
+        <div class="box channels">
+            <h3>渠道通路</h3>
+            <ul>
+                <li>自有移动应用</li>
+                <li>电商平台接入</li>
+                <li>社区物业合作</li>
+                <li>线下体验中心</li>
+                <li>API开放平台</li>
+            </ul>
+        </div>
+
+        <!-- 核心资源 -->
+        <div class="box core-resources">
+            <h3>核心资源</h3>
+            <ul>
+                <li>低空卫星通信网络</li>
+                <li>无人机集群</li>
+                <li>分布式微仓网络</li>
+                <li>AI调度系统与算法</li>
+                <li>技术研发团队</li>
+                <li>数字孪生城市模型</li>
+            </ul>
+        </div>
+
+        <!-- 收入模式 -->
+        <div class="box revenue">
+            <h3>收入模式</h3>
+            <div class="value-sections">
+                <div class="value-section">
+                    <h4>基础配送服务费：</h4>
+                    <ul>
+                        <li>阶梯定价：基于距离、重量、时效</li>
+                        <li>会员订制制：无限次配送服务</li>
+                    </ul>
+                </div>
+
+                <div class="value-section">
+                    <h4>其他收入来源：</h4>
+                    <ul>
+                        <li>平台合作分成</li>
+                        <li>设备租赁与定制</li>
+                        <li>数据服务</li>
+                        <li>广告展示</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户细分 -->
+        <div class="box customer-segments">
+            <h3>客户细分</h3>
+            <ul>
+                <li>个人用户</li>
+                <li>企业客户</li>
+                <li>政府机构</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+{
+  "cloudfunctionRoot": "cloudfunctions/",
+  "functions": [
+    {
+      "name": "login",
+      "env": "cloud1-0gujim8sd49d8866"
+    },
+    {
+      "name": "user",
+      "env": "cloud1-0gujim8sd49d8866"
+    },
+    {
+      "name": "question",
+      "env": "cloud1-0gujim8sd49d8866"
+    },
+    {
+      "name": "study",
+      "env": "cloud1-0gujim8sd49d8866"
+    },
+    {
+      "name": "chat",
+      "env": "cloud1-0gujim8sd49d8866"
+    },
+    {
+      "name": "vocabulary",
+      "env": "cloud1-0gujim8sd49d8866"
+    },
+    {
+      "name": "admin-manage",
+      "env": "cloud1-0gujim8sd49d8866"
+    }
+  ]
+}

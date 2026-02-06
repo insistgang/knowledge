@@ -1,0 +1,3587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于隐私计算的智能化ESG评价与碳金融服务平台</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #1976D2;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --danger-color: #F44336;
+            --dark-color: #212121;
+            --light-bg: #F8F9FA;
+            --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --hover-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 260px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .sidebar-brand i {
+            font-size: 1.5rem;
+            color: #4CAF50;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .sidebar-nav-item {
+            display: block;
+            color: rgba(255,255,255,0.8) !important;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+        }
+
+        .sidebar-nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white !important;
+            border-left-color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .sidebar-nav-item.active {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50 !important;
+            border-left-color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .sidebar-nav-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* 主内容区域 */
+        .main-wrapper {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #f0f2f5;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 0.5rem;
+                padding: 0.75rem;
+                font-size: 1.2rem;
+                box-shadow: var(--card-shadow);
+            }
+
+            .main-container {
+                margin: 1rem;
+            }
+
+            .page-content {
+                padding: 1rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .sidebar-toggle {
+                display: none;
+            }
+        }
+
+        /* 主容器 */
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            margin: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-content {
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* 仪表盘特殊背景 */
+        #dashboard {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            color: white;
+            border-radius: 1rem;
+        }
+
+        #dashboard .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #dashboard .card-header {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        #dashboard .text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        #dashboard h2, #dashboard h3, #dashboard h4, #dashboard h5, #dashboard h6 {
+            color: white;
+        }
+
+        /* 图表容器特殊样式 */
+        #dashboard .chart-container {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        #dashboard canvas {
+            background: white !important;
+            border-radius: 0.25rem;
+        }
+
+        /* 图表卡片特殊样式 */
+        #dashboard .card:has(canvas) {
+            background: white;
+        }
+
+        #dashboard .card:has(canvas) .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        #dashboard .card:has(canvas) .card-body {
+            background: white;
+            padding: 1.5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片样式 */
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            background: white;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* 统计卡片 */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .stat-card .card-body {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            opacity: 0.3;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+        }
+
+        /* 表格样式 */
+        .table {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            width: 100%;
+            table-layout: auto;
+        }
+
+        .table-responsive {
+            max-height: none;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+
+        #companiesList {
+            min-height: 600px;
+            max-height: none;
+        }
+
+        #companiesList .table-responsive {
+            min-height: 500px;
+            max-height: none;
+            height: auto !important;
+        }
+
+        #companiesList .table {
+            height: auto !important;
+            display: table !important;
+        }
+
+        #companiesList .table tbody {
+            height: auto !important;
+            display: table-row-group !important;
+        }
+
+        #companiesList .table tbody tr {
+            display: table-row !important;
+            height: auto !important;
+            min-height: 60px;
+        }
+
+        /* 确保企业管理页面的卡片容器不限制高度 */
+        #companies .card {
+            height: auto !important;
+            min-height: 600px;
+            max-height: none;
+        }
+
+        #companies .card-body {
+            height: auto !important;
+            min-height: 800px;
+            max-height: none;
+            padding: 1.5rem;
+            overflow: visible;
+        }
+
+        /* 强制显示所有表格行 */
+        #companiesList .table {
+            width: 100% !important;
+            height: auto !important;
+            display: table !important;
+            table-layout: auto !important;
+        }
+
+        #companiesList .table tbody {
+            display: table-row-group !important;
+            height: auto !important;
+        }
+
+        #companiesList .table tbody tr {
+            display: table-row !important;
+            height: auto !important;
+            min-height: 50px !important;
+            max-height: none !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        #companiesList .table tbody td {
+            display: table-cell !important;
+            height: auto !important;
+            min-height: 50px !important;
+            padding: 12px 8px !important;
+            vertical-align: middle !important;
+            white-space: normal !important;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(46, 125, 50, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr {
+            min-height: 60px;
+            vertical-align: middle;
+        }
+
+        .table tbody td {
+            padding: 15px 10px;
+            vertical-align: middle;
+            line-height: 1.5;
+            white-space: normal;
+        }
+
+        .table tbody td .badge {
+            font-size: 0.85em;
+            padding: 6px 10px;
+        }
+
+        /* 徽章样式 */
+        .badge {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        /* 表单样式 */
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            border: 2px solid #e0e0e0;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        }
+
+        /* 进度条样式 */
+        .progress {
+            height: 1rem;
+            border-radius: 0.5rem;
+            background: #e0e0e0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 0.5rem;
+        }
+
+        /* 分页样式 */
+        .pagination {
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .page-link {
+            border-radius: 0.5rem;
+            margin: 0 0.25rem;
+            border: none;
+            color: var(--primary-color);
+        }
+
+        .page-link:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem;
+                border-radius: 0.5rem;
+            }
+
+            .page-content {
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+        }
+
+        /* 工具提示 */
+        .tooltip-inner {
+            background: var(--dark-color);
+            border-radius: 0.5rem;
+        }
+
+        /* 警告框 */
+        .alert {
+            border-radius: 0.5rem;
+            border: none;
+        }
+
+        /* 搜索框样式 */
+        .search-box {
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .search-box input {
+            padding-left: 3rem;
+        }
+
+        /* 状态指示器 */
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online {
+            background: var(--success-color);
+        }
+
+        .status-offline {
+            background: var(--danger-color);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- 移动端侧边栏切换按钮 -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-brand">
+                <i class="bi bi-leaf-fill"></i>
+                ESG评价与碳金融服务平台
+            </a>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="sidebar-nav-item active" onclick="showPage('dashboard')">
+                <i class="bi bi-speedometer2"></i> 仪表盘
+            </a>
+            <a href="#" class="sidebar-nav-item" onclick="showPage('companies')">
+                <i class="bi bi-building"></i> 企业管理
+            </a>
+            <a href="#" class="sidebar-nav-item" onclick="showPage('esg')">
+                <i class="bi bi-graph-up"></i> ESG评价
+            </a>
+            <a href="#" class="sidebar-nav-item" onclick="showPage('carbon')">
+                <i class="bi bi-tree"></i> 碳资产
+            </a>
+            <a href="#" class="sidebar-nav-item" onclick="showPage('blockchain')">
+                <i class="bi bi-link-45deg"></i> 区块链
+            </a>
+            <a href="#" class="sidebar-nav-item" onclick="showPage('monitoring')">
+                <i class="bi bi-activity"></i> 系统监控
+            </a>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-wrapper">
+        <!-- 主容器 -->
+        <div class="main-container">
+        <!-- 仪表盘页面 -->
+        <div id="dashboard" class="page-content active">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-speedometer2"></i> 系统概览</h2>
+                <span class="status-indicator status-online"></span>
+                <span class="text-muted">系统运行中</span>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="card-body text-white">
+                            <i class="bi bi-building stat-icon"></i>
+                            <h6 class="card-title">企业总数</h6>
+                            <div class="stat-number" id="totalCompanies">156</div>
+                            <small>活跃企业占比 78%</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="card-body text-white">
+                            <i class="bi bi-link-45deg stat-icon"></i>
+                            <h6 class="card-title">区块链交易</h6>
+                            <div class="stat-number" id="totalTransactions">1,000</div>
+                            <small>今日新增 89 笔</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <div class="card-body text-white">
+                            <i class="bi bi-tree stat-icon"></i>
+                            <h6 class="card-title">碳资产项目</h6>
+                            <div class="stat-number" id="totalCarbonAssets">200</div>
+                            <small>总估值 ¥2.87亿</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <div class="card-body text-white">
+                            <i class="bi bi-graph-up stat-icon"></i>
+                            <h6 class="card-title">ESG评价记录</h6>
+                            <div class="stat-number" id="totalEsgRecords">2,000</div>
+                            <small>平均评分 68.7</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表区域 -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-bar-chart"></i> ESG评分分布
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="esgChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-pie-chart"></i> 行业分布
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="industryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 企业管理页面 -->
+        <div id="companies" class="page-content">
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, #2e7d32, #43a047); color: white !important;">
+                    <h4 class="mb-0" style="color: white !important;">🏢 企业管理</h4>
+                </div>
+
+                <div class="card-body">
+                    <!-- 统计信息 -->
+                    <div class="row mb-4 p-3" style="background: #f8f9fa; border-radius: 8px;">
+                        <div class="col-md-3 text-center">
+                            <h5 id="totalCompaniesCount" class="text-primary">156</h5>
+                            <small class="text-muted">一共有156家企业</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h5 id="activeCompaniesCount" class="text-success">0</h5>
+                            <small class="text-muted">活跃企业</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h5 id="avgESGScore" class="text-info">0</h5>
+                            <small class="text-muted">平均ESG评分</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h5 id="displayedCompaniesCount" class="text-warning">0</h5>
+                            <small class="text-muted">当前显示</small>
+                        </div>
+                    </div>
+
+                    <!-- 搜索和筛选 -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label text-success fw-bold">🔍 企业搜索</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-success text-white">🔍</span>
+                                <input type="text" class="form-control border-success" id="companySearch" placeholder="输入企业名称进行搜索..." onkeyup="searchCompanies()">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-primary fw-bold">🏭 行业筛选</label>
+                            <select class="form-select border-primary" id="industryFilter" onchange="filterCompanies()">
+                                <option value="">所有行业</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-info fw-bold">📄 分页设置</label>
+                            <select class="form-select border-info" id="pageSize" onchange="changePageSize()">
+                                <option value="10" selected>每页10条</option>
+                                <option value="20">每页20条</option>
+                                <option value="50">每页50条</option>
+                                <option value="100">每页100条</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-secondary fw-bold">🔄 操作</label>
+                            <button class="btn btn-primary w-100 mt-2" onclick="loadCompanies()">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新数据
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 企业列表 -->
+                    <div id="companiesList" style="min-height: 500px;">
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">加载中...</span>
+                            </div>
+                            <p class="mt-3">正在加载企业数据...</p>
+                        </div>
+                    </div>
+
+                    <!-- 分页导航 -->
+                    <div class="d-flex justify-content-center mt-4">
+                        <nav>
+                            <ul class="pagination mb-0" id="companiesPagination">
+                                <!-- 分页将通过JavaScript动态生成 -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG评价页面 -->
+        <div id="esg" class="page-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-graph-up"></i> ESG评价</h2>
+                <button class="btn btn-primary" onclick="loadEsgHistory()">
+                    <i class="bi bi-clock-history"></i> 评价历史
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-clipboard-check"></i> 企业ESG评价
+                        </div>
+                        <div class="card-body">
+                            <form id="esgForm">
+                                <div class="mb-3">
+                                    <label class="form-label">🏢 企业名称</label>
+                                    <select class="form-select" id="companyId" required>
+                                        <option value="">请选择企业...</option>
+                                    </select>
+                                    <div class="form-text">选择要进行ESG评价的企业</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">环境评分 (0-100)</label>
+                                    <input type="range" class="form-range" id="environmentalScore" min="0" max="100" value="75" oninput="updateScoreDisplay('environmentalScore', this.value)">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">环境因素</small>
+                                        <span class="badge bg-primary" id="environmentalScore-display">75</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">社会评分 (0-100)</label>
+                                    <input type="range" class="form-range" id="socialScore" min="0" max="100" value="68" oninput="updateScoreDisplay('socialScore', this.value)">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">社会责任</small>
+                                        <span class="badge bg-info" id="socialScore-display">68</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">治理评分 (0-100)</label>
+                                    <input type="range" class="form-range" id="governanceScore" min="0" max="100" value="82" oninput="updateScoreDisplay('governanceScore', this.value)">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">公司治理</small>
+                                        <span class="badge bg-success" id="governanceScore-display">82</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-calculator"></i> 提交评价
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="esgResult">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="bi bi-award"></i> 评价结果
+                            </div>
+                            <div class="card-body text-center">
+                                <i class="bi bi-clipboard-data" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">提交表单后查看评价结果</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESG历史记录 -->
+            <div class="card mt-4" id="esgHistoryCard" style="display: none;">
+                <div class="card-header">
+                    <i class="bi bi-clock-history"></i> ESG评价历史
+                </div>
+                <div class="card-body">
+                    <div id="esgHistoryList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 碳资产页面 -->
+        <div id="carbon" class="page-content">
+            <!-- 页面标题和说明 -->
+            <div class="card mb-4 border-0 bg-gradient bg-success">
+                <div class="card-body text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-2"><i class="bi bi-tree"></i> 碳资产管理</h2>
+                            <p class="mb-0 opacity-90">评估和管理您的碳减排项目，计算碳资产价值，助力碳中和目标实现</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-warning me-2" onclick="showAddCarbonAssetModal()">
+                                <i class="bi bi-plus-circle"></i> 添加项目
+                            </button>
+                            <button class="btn btn-light" onclick="loadCarbonAssets()">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新数据
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 概览统计卡片 -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="bi bi-graph-up-arrow text-success" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2" id="totalProjects">0</h4>
+                            <p class="text-muted mb-0">总项目数</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="bi bi-cloud text-primary" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2" id="totalCarbon">0</h4>
+                            <p class="text-muted mb-0">总碳汇量(吨)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="bi bi-currency-dollar text-warning" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2" id="totalValue">¥0</h4>
+                            <p class="text-muted mb-0">总估值</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 bg-light">
+                        <div class="card-body text-center">
+                            <i class="bi bi-globe text-info" style="font-size: 2rem;"></i>
+                            <h4 class="mt-2" id="avgPrice">¥0</h4>
+                            <p class="text-muted mb-0">平均单价</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <i class="bi bi-calculator"></i> 碳资产估值计算器
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info mb-3">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>使用说明：</strong>填写项目信息，系统将根据当前市场价格为您计算碳资产价值
+                            </div>
+                            <form id="carbonForm">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-primary">🌱 项目类型</label>
+                                    <select class="form-select border-primary" id="projectType" required>
+                                        <option value="">请选择项目类型...</option>
+                                        <option value="林业碳汇">🌳 林业碳汇 - 森林吸收二氧化碳</option>
+                                        <option value="可再生能源">⚡ 可再生能源 - 风能、太阳能等</option>
+                                        <option value="节能改造">💡 节能改造 - 提高能源效率</option>
+                                        <option value="甲烷回收">🔥 甲烷回收 - 减少温室气体排放</option>
+                                        <option value="生物质能源">🌾 生物质能源 - 有机物转化能源</option>
+                                    </select>
+                                    <div class="form-text">选择您的碳减排项目类型</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-primary">☁️ 碳汇量 (吨CO₂)</label>
+                                    <input type="number" class="form-control border-primary" id="carbonAmount" min="1" step="0.01" placeholder="请输入碳汇量" required>
+                                    <div class="form-text">项目减少或吸收的二氧化碳总量</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-primary">📍 项目地点</label>
+                                    <select class="form-select border-primary" id="projectLocation" required>
+                                        <option value="">请选择项目地点...</option>
+                                        <option value="北京市">🏛️ 北京市</option>
+                                        <option value="上海市">🏙️ 上海市</option>
+                                        <option value="广州市">🌴 广州市</option>
+                                        <option value="深圳市">🏢 深圳市</option>
+                                        <option value="杭州市">🏞️ 杭州市</option>
+                                        <option value="成都市">🐼 成都市</option>
+                                        <option value="武汉市">🌊 武汉市</option>
+                                        <option value="西安市">🏮 西安市</option>
+                                        <option value="南京市">🌸 南京市</option>
+                                    </select>
+                                    <div class="form-text">项目实施的具体地理位置</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-primary">📅 项目年份</label>
+                                    <input type="number" class="form-control border-primary" id="projectYear" min="2020" max="2024" value="2024" placeholder="2024" required>
+                                    <div class="form-text">项目实施的年份（影响价格计算）</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 btn-lg">
+                                    <i class="bi bi-currency-dollar"></i> 开始计算估值
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div id="carbonResult">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-success text-white">
+                                <i class="bi bi-graph-up-arrow"></i> 碳资产估值结果
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center py-5">
+                                    <i class="bi bi-cash-stack text-muted" style="font-size: 4rem;"></i>
+                                    <h5 class="text-muted mt-3 mb-4">等待估值计算...</h5>
+                                    <div class="alert alert-light">
+                                        <i class="bi bi-lightbulb text-warning"></i>
+                                        <strong>提示：</strong>请先在左侧填写项目信息并点击"开始计算估值"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 碳资产项目列表 -->
+            <div class="card mt-4 border-0 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-list-ul"></i>
+                            <strong>碳资产项目列表</strong>
+                            <small class="ms-2 opacity-75">查看和管理所有碳资产项目</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-light text-dark" id="projectCount">0 个项目</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- 筛选器 -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">🔍</span>
+                                <input type="text" class="form-control" id="carbonSearch" placeholder="搜索项目..." onkeyup="searchCarbonAssets()">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="carbonTypeFilter" onchange="filterCarbonAssets()">
+                                <option value="">所有类型</option>
+                                <option value="林业碳汇">林业碳汇</option>
+                                <option value="可再生能源">可再生能源</option>
+                                <option value="节能改造">节能改造</option>
+                                <option value="甲烷回收">甲烷回收</option>
+                                <option value="生物质能源">生物质能源</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="carbonLocationFilter" onchange="filterCarbonAssets()">
+                                <option value="">所有地点</option>
+                                <option value="北京市">北京市</option>
+                                <option value="上海市">上海市</option>
+                                <option value="广州市">广州市</option>
+                                <option value="深圳市">深圳市</option>
+                                <option value="杭州市">杭州市</option>
+                                <option value="成都市">成都市</option>
+                                <option value="武汉市">武汉市</option>
+                                <option value="西安市">西安市</option>
+                                <option value="南京市">南京市</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary w-100" onclick="loadCarbonAssets()">
+                                <i class="bi bi-arrow-clockwise"></i> 刷新
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 数据表格 -->
+                    <div id="carbonAssetsList" class="table-responsive">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">加载中...</span>
+                            </div>
+                            <p class="text-muted">正在加载碳资产项目数据...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 区块链页面 -->
+        <div id="blockchain" class="page-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-link-45deg"></i> 区块链交易监控平台</h2>
+                <div>
+                    <button class="btn btn-success" onclick="startRealTimeBlockchain()">
+                        <i class="bi bi-play-circle"></i> 实时监控
+                    </button>
+                    <button class="btn btn-primary" onclick="loadBlockchainTransactions()">
+                        <i class="bi bi-arrow-clockwise"></i> 刷新数据
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计概览卡片 -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="card-body text-dark" style="background: rgba(255,255,255,0.9); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            <i class="bi bi-link-45deg stat-icon" style="color: #2c3e50 !important; font-size: 1.5rem;"></i>
+                            <h6 class="card-title" style="color: #2c3e50 !important; font-weight: 700;">总交易数</h6>
+                            <div class="stat-number" id="totalTxCount" style="color: #1a252f !important; font-weight: 900; font-size: 2.2rem;">1,000</div>
+                            <small style="color: #495057 !important; font-weight: 600;">历史累计交易 <span id="txGrowth" style="color: #28a745 !important; font-weight: 700;">+127</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="card-body text-dark" style="background: rgba(255,255,255,0.9); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            <i class="bi bi-check-circle stat-icon" style="color: #2c3e50 !important; font-size: 1.5rem;"></i>
+                            <h6 class="card-title" style="color: #2c3e50 !important; font-weight: 700;">已确认</h6>
+                            <div class="stat-number" id="confirmedTx" style="color: #1a252f !important; font-weight: 900; font-size: 2.2rem;">987</div>
+                            <small style="color: #495057 !important; font-weight: 600;">确认率 <span id="confirmRate" style="color: #28a745 !important; font-weight: 700;">98.7%</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <div class="card-body text-dark" style="background: rgba(255,255,255,0.9); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            <i class="bi bi-hourglass-split stat-icon" style="color: #2c3e50 !important; font-size: 1.5rem;"></i>
+                            <h6 class="card-title" style="color: #2c3e50 !important; font-weight: 700;">处理中</h6>
+                            <div class="stat-number" id="pendingTx" style="color: #1a252f !important; font-weight: 900; font-size: 2.2rem;">13</div>
+                            <small style="color: #495057 !important; font-weight: 600;">平均等待 <span id="avgWaitTime" style="color: #ffc107 !important; font-weight: 700;">2.3s</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stat-card bg-gradient" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="card-body text-dark" style="background: rgba(255,255,255,0.9); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+                            <i class="bi bi-cpu stat-icon" style="color: #2c3e50 !important; font-size: 1.5rem;"></i>
+                            <h6 class="card-title" style="color: #2c3e50 !important; font-weight: 700;">Gas费用</h6>
+                            <div class="stat-number" id="avgGas" style="color: #1a252f !important; font-weight: 900; font-size: 2.2rem;">0.0032</div>
+                            <small style="color: #495057 !important; font-weight: 600;">ETH 平均费用</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交易类型分布图表 -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-pie-chart"></i> 交易类型分布
+                        </div>
+                        <div class="card-body">
+                            <canvas id="txTypeChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-graph-up"></i> 24小时交易趋势
+                        </div>
+                        <div class="card-body">
+                            <canvas id="txVolumeChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交易记录表格 -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-list"></i>
+                        <span>交易记录</span>
+                        <span class="badge bg-primary ms-2" id="txCount">0</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <!-- 搜索框 -->
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control form-control-sm" placeholder="搜索交易哈希或地址..." id="blockchainSearch">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="searchBlockchain()">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <!-- 过滤器 -->
+                        <select class="form-select form-select-sm" style="width: 150px;" id="txTypeFilter">
+                            <option value="">全部类型</option>
+                            <option value="ESG评价记录">ESG评价记录</option>
+                            <option value="碳资产交易">碳资产交易</option>
+                            <option value="企业信息更新">企业信息更新</option>
+                            <option value="数据验证">数据验证</option>
+                            <option value="智能合约执行">智能合约执行</option>
+                            <option value="碳信用发行">碳信用发行</option>
+                            <option value="资产抵押">资产抵押</option>
+                            <option value="数据共享授权">数据共享授权</option>
+                            <option value="审计记录">审计记录</option>
+                            <option value="合规检查">合规检查</option>
+                        </select>
+                        <select class="form-select form-select-sm" style="width: 120px;" id="txStatusFilter">
+                            <option value="">全部状态</option>
+                            <option value="confirmed">已确认</option>
+                            <option value="pending">处理中</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- 分页控制 -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary btn-sm" onclick="loadBlockchainPage(1)">
+                                <i class="bi bi-chevron-double-left"></i> 首页
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="loadBlockchainPreviousPage()">
+                                <i class="bi bi-chevron-left"></i> 上一页
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="loadBlockchainNextPage()">
+                                下一页 <i class="bi bi-chevron-right"></i>
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="loadBlockchainPage(Math.ceil(blockchainTotalCount / blockchainPageSize))">
+                                末页 <i class="bi bi-chevron-double-right"></i>
+                            </button>
+                        </div>
+                        <div class="text-muted">
+                            显示第 <span id="blockchainStart">1</span>-<span id="blockchainEnd">20</span> 条，
+                            共 <span id="blockchainTotal">0</span> 条记录
+                        </div>
+                        <select class="form-select form-select-sm" style="width: 100px;" id="blockchainPageSize" onchange="changeBlockchainPageSize()">
+                            <option value="20">20条/页</option>
+                            <option value="50">50条/页</option>
+                            <option value="100">100条/页</option>
+                        </select>
+                    </div>
+
+                    <!-- 交易列表 -->
+                    <div id="blockchainList" class="table-responsive">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">加载中...</span>
+                            </div>
+                            <p class="text-muted">正在加载区块链交易数据...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交易详情模态框 -->
+            <div class="modal fade" id="blockchainModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">交易详情</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" id="blockchainModalBody">
+                            <!-- 交易详情将在这里显示 -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="copyTransactionHash()">
+                                <i class="bi bi-clipboard"></i> 复制哈希
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统监控页面 -->
+        <div id="monitoring" class="page-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-activity"></i> 系统监控</h2>
+                <div class="d-flex gap-2">
+                    <span class="status-indicator status-online"></span>
+                    <span class="text-muted">实时监控中</span>
+                </div>
+            </div>
+
+            <!-- 系统资源监控 -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-cpu" style="font-size: 2rem; color: var(--primary-color);"></i>
+                            <h5 class="mt-3">CPU使用率</h5>
+                            <div class="progress mt-3">
+                                <div class="progress-bar" id="cpuProgress" style="width: 45%"></div>
+                            </div>
+                            <h4 class="mt-2" id="cpuUsage">45%</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-memory" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                            <h5 class="mt-3">内存使用率</h5>
+                            <div class="progress mt-3">
+                                <div class="progress-bar bg-info" id="memoryProgress" style="width: 67%"></div>
+                            </div>
+                            <h4 class="mt-2" id="memoryUsage">67%</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-hdd" style="font-size: 2rem; color: var(--warning-color);"></i>
+                            <h5 class="mt-3">磁盘使用率</h5>
+                            <div class="progress mt-3">
+                                <div class="progress-bar bg-warning" id="diskProgress" style="width: 52%"></div>
+                            </div>
+                            <h4 class="mt-2" id="diskUsage">52%</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-wifi" style="font-size: 2rem; color: var(--success-color);"></i>
+                            <h5 class="mt-3">网络延迟</h5>
+                            <div class="progress mt-3">
+                                <div class="progress-bar bg-success" id="networkProgress" style="width: 23%"></div>
+                            </div>
+                            <h4 class="mt-2" id="networkLatency">23ms</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API性能监控 -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up"></i> API性能监控
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>API调用统计</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">总调用次数</small>
+                                    <h4 id="apiCalls">2,468</h4>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">平均响应时间</small>
+                                    <h4 id="responseTime">0.23s</h4>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">错误率</small>
+                                    <h4 id="errorRate">0.8%</h4>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">95%响应时间</small>
+                                    <h4 id="p95ResponseTime">0.89s</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>实时性能图表</h6>
+                            <div class="chart-container" style="height: 200px;">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统日志 -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="bi bi-journal-text"></i> 系统日志
+                </div>
+                <div class="card-body">
+                    <div id="systemLogs">
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> 系统启动成功 - 2025-10-05 00:30:15
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> 数据库连接已建立 - 2025-10-05 00:30:16
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> API响应时间略有延迟 - 2025-10-05 00:45:23
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div> <!-- 关闭 main-container -->
+    </div> <!-- 关闭 main-wrapper -->
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // 全局配置
+        const API_BASE = 'http://localhost:8018';
+        let currentPage = 'dashboard';
+        let esgChart = null;
+        let industryChart = null;
+        let performanceChart = null;
+        let txTypeChart = null;
+        let txVolumeChart = null;
+
+        // 区块链相关变量
+        let blockchainCurrentPage = 1;
+        let blockchainPageSize = 20;
+        let blockchainTotalCount = 0;
+        let allBlockchainTransactions = [];
+        let filteredBlockchainTransactions = [];
+        let blockchainRealTimeInterval = null;
+        let currentTransactionDetail = null;
+
+        // 企业分页相关变量
+        let allCompanies = [];
+        let companyCurrentPage = 1;
+        let companiesPerPage = 100;
+
+        // 侧边栏切换功能
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // 点击页面其他地方关闭侧边栏（移动端）
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+
+            if (window.innerWidth <= 768 &&
+                !sidebar.contains(event.target) &&
+                !toggle.contains(event.target) &&
+                sidebar.classList.contains('show')) {
+                sidebar.classList.remove('show');
+            }
+        });
+
+        // 页面切换功能
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 显示目标页面
+            document.getElementById(pageId).classList.add('active');
+
+            // 更新导航栏状态
+            document.querySelectorAll('.sidebar-nav-item').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // 移动端自动关闭侧边栏
+            if (window.innerWidth <= 768) {
+                const sidebar = document.querySelector('.sidebar');
+                sidebar.classList.remove('show');
+            }
+
+            currentPage = pageId;
+
+            // 根据页面加载相应数据
+            switch(pageId) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'companies':
+                    loadCompanies();
+                    break;
+                case 'esg':
+                    // ESG页面不需要自动加载数据
+                    break;
+                case 'carbon':
+                    loadCarbonAssets();
+                    break;
+                case 'blockchain':
+                    loadBlockchainTransactions();
+                    break;
+                case 'monitoring':
+                    loadMonitorData();
+                    startMonitoring();
+                    break;
+            }
+        }
+
+        // 加载仪表盘数据
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+
+                // 更新统计数据
+                document.getElementById('totalCompanies').textContent = data.data_scale?.companies || 500;
+                document.getElementById('totalTransactions').textContent = data.data_scale?.blockchain_txs || 1000;
+                document.getElementById('totalCarbonAssets').textContent = data.data_scale?.carbon_assets || 200;
+                document.getElementById('totalEsgRecords').textContent = data.data_scale?.esg_history || 2000;
+
+                // 初始化图表
+                initCharts();
+            } catch (error) {
+                console.error('加载仪表盘数据失败:', error);
+            }
+        }
+
+        // 初始化图表
+        function initCharts() {
+            // ESG评分分布图
+            const esgCtx = document.getElementById('esgChart').getContext('2d');
+            if (esgChart) esgChart.destroy();
+            esgChart = new Chart(esgCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['A+', 'A', 'B+', 'B', 'C+', 'C'],
+                    datasets: [{
+                        label: '企业数量',
+                        data: [18, 42, 53, 28, 12, 3],
+                        backgroundColor: [
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(33, 150, 243, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(244, 67, 54, 0.8)',
+                            'rgba(156, 39, 176, 0.8)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#666'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#666'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff'
+                        }
+                    }
+                }
+            });
+
+            // 行业分布图
+            const industryCtx = document.getElementById('industryChart').getContext('2d');
+            if (industryChart) industryChart.destroy();
+            industryChart = new Chart(industryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['制造业', '金融业', '新能源', '环保技术', '农业科技', '其他'],
+                    datasets: [{
+                        data: [156, 98, 87, 76, 54, 29],
+                        backgroundColor: [
+                            'rgba(33, 150, 243, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(156, 39, 176, 0.8)',
+                            'rgba(96, 125, 139, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // 加载企业数据
+        // 企业管理 - 简单版本JavaScript函数
+        let allCompaniesData = [];
+        let filteredCompaniesData = [];
+        let companiesCurrentPage = 1;
+        let companiesPageSize = 10;
+
+        // 碳资产相关全局变量
+        let allCarbonAssets = [];
+        let filteredCarbonAssets = [];
+        let carbonAssetIdToDelete = null;
+        let nextCarbonAssetId = 9; // 从9开始，因为现有数据到8
+
+        async function loadCompanies() {
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/companies?page_size=156`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    allCompaniesData = data.data;
+                    filteredCompaniesData = allCompaniesData;
+
+                    // 更新统计信息
+                    updateCompaniesStats();
+
+                    // 填充行业筛选器
+                    const industries = [...new Set(allCompaniesData.map(c => c.industry))];
+                    const industryFilter = document.getElementById('industryFilter');
+                    industryFilter.innerHTML = '<option value="">所有行业</option>';
+                    industries.forEach(industry => {
+                        industryFilter.innerHTML += `<option value="${industry}">${industry}</option>`;
+                    });
+
+                    // 显示企业数据
+                    displayCompaniesData();
+                } else {
+                    document.getElementById('companiesList').innerHTML =
+                        '<div class="text-center p-5"><div class="alert alert-danger">❌ 加载数据失败</div></div>';
+                }
+            } catch (error) {
+                console.error('错误:', error);
+                document.getElementById('companiesList').innerHTML =
+                    '<div class="text-center p-5"><div class="alert alert-danger">❌ 网络错误</div></div>';
+            }
+        }
+
+        function updateCompaniesStats() {
+            const activeCount = filteredCompaniesData.filter(c => c.is_active).length;
+            const avgESG = (filteredCompaniesData.reduce((sum, c) => sum + (c.esg_score || 0), 0) / filteredCompaniesData.length).toFixed(1);
+
+            document.getElementById('totalCompaniesCount').textContent = allCompaniesData.length;
+            document.getElementById('activeCompaniesCount').textContent = activeCount;
+            document.getElementById('avgESGScore').textContent = avgESG;
+            document.getElementById('displayedCompaniesCount').textContent = filteredCompaniesData.length;
+        }
+
+        function displayCompaniesData() {
+            const companiesDiv = document.getElementById('companiesList');
+            const start = (companiesCurrentPage - 1) * companiesPageSize;
+            const end = start + companiesPageSize;
+            const pageCompanies = filteredCompaniesData.slice(start, end);
+
+            let html = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>企业名称</th>
+                                <th>行业</th>
+                                <th>地区</th>
+                                <th>员工数</th>
+                                <th>注册资本</th>
+                                <th>ESG评分</th>
+                                <th>状态</th>
+                                <th>成立日期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            pageCompanies.forEach(company => {
+                const esgScore = company.esg_score || 0;
+                const scoreClass = esgScore >= 80 ? 'success' : esgScore >= 70 ? 'warning' : 'danger';
+
+                html += `
+                    <tr>
+                        <td><span class="badge bg-secondary">${company.id}</span></td>
+                        <td><strong>${company.name}</strong></td>
+                        <td><span class="badge bg-info">${company.industry}</span></td>
+                        <td>${company.location}</td>
+                        <td>${company.employees.toLocaleString()}</td>
+                        <td>¥${(company.registered_capital/10000).toFixed(0)}万</td>
+                        <td><span class="badge bg-${scoreClass}">${esgScore}</span></td>
+                        <td><span class="badge ${company.is_active ? 'bg-success' : 'bg-secondary'}">${company.is_active ? '活跃' : '未激活'}</span></td>
+                        <td>${company.established_date}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            companiesDiv.innerHTML = html;
+            displayCompaniesPagination();
+        }
+
+        function displayCompaniesPagination() {
+            const totalPages = Math.ceil(filteredCompaniesData.length / companiesPageSize);
+            const pagination = document.getElementById('companiesPagination');
+            pagination.innerHTML = '';
+
+            // 上一页
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${companiesCurrentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="changeCompaniesPage(${companiesCurrentPage - 1})">上一页</a>`;
+            pagination.appendChild(prevLi);
+
+            // 页码
+            for (let i = 1; i <= Math.min(totalPages, 10); i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === companiesCurrentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="changeCompaniesPage(${i})">${i}</a>`;
+                pagination.appendChild(li);
+            }
+
+            // 下一页
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${companiesCurrentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="changeCompaniesPage(${companiesCurrentPage + 1})">下一页</a>`;
+            pagination.appendChild(nextLi);
+
+            // 显示当前页信息
+            const start = (companiesCurrentPage - 1) * companiesPageSize + 1;
+            const end = Math.min(companiesCurrentPage * companiesPageSize, filteredCompaniesData.length);
+
+            const infoLi = document.createElement('li');
+            infoLi.className = 'page-item disabled';
+            infoLi.innerHTML = `<a class="page-link">显示第 ${start}-${end} 条，共 ${filteredCompaniesData.length} 条</a>`;
+            pagination.appendChild(infoLi);
+        }
+
+        function changeCompaniesPage(page) {
+            const totalPages = Math.ceil(filteredCompaniesData.length / companiesPageSize);
+            if (page >= 1 && page <= totalPages) {
+                companiesCurrentPage = page;
+                displayCompaniesData();
+            }
+            return false;
+        }
+
+        function changePageSize() {
+            companiesPageSize = parseInt(document.getElementById('pageSize').value);
+            companiesCurrentPage = 1;
+            displayCompaniesData();
+        }
+
+        function searchCompanies() {
+            const searchTerm = document.getElementById('companySearch').value.toLowerCase();
+            const industryFilter = document.getElementById('industryFilter').value;
+
+            filteredCompaniesData = allCompaniesData.filter(company => {
+                const matchesSearch = company.name.toLowerCase().includes(searchTerm);
+                const matchesIndustry = !industryFilter || company.industry === industryFilter;
+                return matchesSearch && matchesIndustry;
+            });
+
+            companiesCurrentPage = 1;
+            updateCompaniesStats();
+            displayCompaniesData();
+        }
+
+        function filterCompanies() {
+            searchCompanies();
+        }
+
+        
+        // 显示企业列表
+        function displayCompanies(companies) {
+            console.log(`开始显示 ${companies.length} 家企业数据`);
+            allCompanies = companies;
+            companyCurrentPage = 1;
+            displayCompaniesPage();
+        }
+
+        function displayCompaniesPage(filteredCompanies = null) {
+            const companiesDiv = document.getElementById('companiesList');
+            const companiesToDisplay = filteredCompanies || allCompanies;
+            const totalPages = Math.ceil(companiesToDisplay.length / companiesPerPage);
+            const startIndex = (companyCurrentPage - 1) * companiesPerPage;
+            const endIndex = startIndex + companiesPerPage;
+            const currentPageCompanies = companiesToDisplay.slice(startIndex, endIndex);
+
+            console.log(`显示第${companyCurrentPage}页，共${totalPages}页，当前页${currentPageCompanies.length}条记录`);
+
+            let html = `
+                <div class="table-responsive">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="text-muted">
+                            显示 ${startIndex + 1}-${Math.min(endIndex, companiesToDisplay.length)} 条，共 ${companiesToDisplay.length} 条记录
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="pageSizeSelect" class="form-label mb-0">每页显示:</label>
+                            <select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto;" onchange="changePageSize(this.value)">
+                                <option value="10" ${companiesPerPage === 10 ? 'selected' : ''}>10</option>
+                                <option value="20" ${companiesPerPage === 20 ? 'selected' : ''}>20</option>
+                                <option value="50" ${companiesPerPage === 50 ? 'selected' : ''}>50</option>
+                                <option value="100" ${companiesPerPage === 100 ? 'selected' : ''}>100</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>企业名称</th>
+                                <th>所属行业</th>
+                                <th>所在地区</th>
+                                <th>员工数</th>
+                                <th>注册资本</th>
+                                <th>ESG评分</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            currentPageCompanies.forEach(company => {
+                const esgScore = company.esg_score || Math.floor(Math.random() * 30) + 60;
+                const scoreColor = esgScore >= 80 ? 'success' : esgScore >= 70 ? 'warning' : 'danger';
+
+                html += `
+                    <tr>
+                        <td>
+                            <div>
+                                <strong>${company.name}</strong>
+                                <br>
+                                <small class="text-muted">成立: ${company.established_date}</small>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-info">${company.industry}</span></td>
+                        <td>${company.location}</td>
+                        <td><span class="badge bg-light text-dark">${company.employees}</span></td>
+                        <td>
+                            <span class="text-nowrap">¥${(company.registered_capital/10000).toFixed(0)}万</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-${scoreColor} me-2">${esgScore}</span>
+                                <small class="text-muted">分</small>
+                            </div>
+                        </td>
+                        <td><small>${company.last_evaluation}</small></td>
+                        <td>
+                            <span class="badge ${company.is_active ? 'bg-success' : 'bg-secondary'}">
+                                ${company.is_active ? '活跃' : '未激活'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewCompanyDetails(${company.id})">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页导航 -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        显示第 ${startIndex + 1}-${Math.min(endIndex, companiesToDisplay.length)} 条，共 ${companiesToDisplay.length} 条记录
+                    </div>
+                    <nav aria-label="企业列表分页">
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item ${companyCurrentPage === 1 ? 'disabled' : ''}">
+                                <a class="page-link" href="#" onclick="changeCompanyPage(${companyCurrentPage - 1}); return false;">
+                                    <i class="bi bi-chevron-left"></i> 上一页
+                                </a>
+                            </li>
+            `;
+
+            // 生成页码
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, companyCurrentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `
+                    <li class="page-item ${i === companyCurrentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changeCompanyPage(${i}); return false;">${i}</a>
+                    </li>
+                `;
+            }
+
+            html += `
+                            <li class="page-item ${companyCurrentPage === totalPages ? 'disabled' : ''}">
+                                <a class="page-link" href="#" onclick="changeCompanyPage(${companyCurrentPage + 1}); return false;">
+                                    下一页 <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            `;
+
+            console.log('生成的HTML长度:', html.length);
+            console.log('HTML前500字符:', html.substring(0, 500));
+            companiesDiv.innerHTML = html;
+            console.log('已设置innerHTML，表格行数:', document.querySelectorAll('#companiesList tbody tr').length);
+        }
+
+        // 填充筛选器
+        function populateFilters(companies) {
+            const industryFilter = document.getElementById('industryFilter');
+            const industries = [...new Set(companies.map(c => c.industry))];
+
+            industryFilter.innerHTML = '<option value="">所有行业</option>';
+            industries.forEach(industry => {
+                industryFilter.innerHTML += `<option value="${industry}">${industry}</option>`;
+            });
+        }
+
+        // 搜索企业
+        
+        // 按行业筛选
+        function filterByIndustry() {
+            applyFilters();
+        }
+
+        // 按状态筛选
+        function filterByStatus() {
+            applyFilters();
+        }
+
+        // 应用所有筛选条件
+        function applyFilters() {
+            const searchTerm = document.getElementById('companySearch').value.toLowerCase();
+            const industry = document.getElementById('industryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            let filteredCompanies = allCompanies.filter(company => {
+                const matchesSearch = !searchTerm || company.name.toLowerCase().includes(searchTerm);
+                const matchesIndustry = !industry || company.industry === industry;
+                const matchesStatus = !status ||
+                    (status === 'active' && company.is_active) ||
+                    (status === 'inactive' && !company.is_active);
+
+                return matchesSearch && matchesIndustry && matchesStatus;
+            });
+
+            companyCurrentPage = 1;
+            displayCompaniesPage(filteredCompanies);
+        }
+
+        
+        // 排序企业
+        function sortCompanies() {
+            const sortBy = document.getElementById('sortBy').value;
+            const tbody = document.querySelector('#companiesList tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                let aValue, bValue;
+
+                switch(sortBy) {
+                    case 'id':
+                        aValue = parseInt(a.querySelector('td:nth-child(1)').textContent);
+                        bValue = parseInt(b.querySelector('td:nth-child(1)').textContent);
+                        break;
+                    case 'name':
+                        aValue = a.querySelector('td:nth-child(2) strong').textContent;
+                        bValue = b.querySelector('td:nth-child(2) strong').textContent;
+                        return aValue.localeCompare(bValue);
+                    case 'esg_score':
+                        aValue = parseInt(a.querySelector('td:nth-child(7) .badge').textContent);
+                        bValue = parseInt(b.querySelector('td:nth-child(7) .badge').textContent);
+                        break;
+                    case 'employees':
+                        aValue = parseInt(a.querySelector('td:nth-child(5) .badge').textContent);
+                        bValue = parseInt(b.querySelector('td:nth-child(5) .badge').textContent);
+                        break;
+                }
+
+                return aValue - bValue;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // 查看企业详情
+        function viewCompanyDetails(companyId) {
+            alert(`查看企业 ${companyId} 的详细信息`);
+            // 这里可以打开一个模态框显示详细信息
+        }
+
+        // ESG评分显示更新
+        function updateScoreDisplay(scoreId, value) {
+            document.getElementById(scoreId + '-display').textContent = value;
+        }
+
+        // ESG评价表单提交
+        document.getElementById('esgForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                company_id: parseInt(document.getElementById('companyId').value),
+                environmental_score: parseInt(document.getElementById('environmentalScore').value),
+                social_score: parseInt(document.getElementById('socialScore').value),
+                governance_score: parseInt(document.getElementById('governanceScore').value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/esg/evaluate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayEsgResult(result.data);
+                } else {
+                    showNotification('ESG评价失败', 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误', 'error');
+                console.error('ESG评价失败:', error);
+            }
+        });
+
+        // 显示ESG评价结果
+        function displayEsgResult(data) {
+            const resultDiv = document.getElementById('esgResult');
+
+            const gradeColors = {
+                'A+': 'success',
+                'A': 'success',
+                'B+': 'warning',
+                'B': 'warning',
+                'C+': 'danger',
+                'C': 'danger'
+            };
+
+            const gradeColor = gradeColors[data.evaluation_grade] || 'secondary';
+
+            resultDiv.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-award"></i> 评价结果
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <h6>企业名称</h6>
+                                <p class="fw-bold">${data.company_name}</p>
+                            </div>
+                            <div class="col-6">
+                                <h6>所属行业</h6>
+                                <p class="fw-bold">${data.industry}</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <h6>综合评分</h6>
+                                <h3><span class="badge bg-${gradeColor} fs-3">${data.overall_score}</span></h3>
+                            </div>
+                            <div class="col-6">
+                                <h6>评价等级</h6>
+                                <h3><span class="badge bg-${gradeColor} fs-3">${data.evaluation_grade}</span></h3>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <h6>环境评分</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: ${data.environmental_score}%"></div>
+                                </div>
+                                <small class="text-muted">${data.environmental_score} 分</small>
+                            </div>
+                            <div class="col-4">
+                                <h6>社会评分</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" style="width: ${data.social_score}%"></div>
+                                </div>
+                                <small class="text-muted">${data.social_score} 分</small>
+                            </div>
+                            <div class="col-4">
+                                <h6>治理评分</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" style="width: ${data.governance_score}%"></div>
+                                </div>
+                                <small class="text-muted">${data.governance_score} 分</small>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-lightbulb"></i> 改进建议</h6>
+                            <p>${data.suggestion}</p>
+                        </div>
+
+                        <div class="row text-muted small">
+                            <div class="col-6">
+                                <i class="bi bi-shield-check"></i> 置信度: ${(data.confidence_level * 100).toFixed(0)}%
+                            </div>
+                            <div class="col-6">
+                                <i class="bi bi-clock"></i> 评价时间: ${new Date().toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            showNotification('ESG评价完成', 'success');
+        }
+
+        // 加载ESG历史记录
+        async function loadEsgHistory() {
+            const historyCard = document.getElementById('esgHistoryCard');
+            const historyList = document.getElementById('esgHistoryList');
+
+            historyCard.style.display = 'block';
+            historyList.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/esg/history?limit=10`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    displayEsgHistory(data.data);
+                } else {
+                    historyList.innerHTML = '<p class="text-warning">暂无历史记录</p>';
+                }
+            } catch (error) {
+                historyList.innerHTML = '<p class="text-danger">加载历史记录失败</p>';
+                console.error('加载ESG历史记录失败:', error);
+            }
+        }
+
+        // 显示ESG历史记录
+        function displayEsgHistory(history) {
+            const historyList = document.getElementById('esgHistoryList');
+
+            let html = '<div class="table-responsive"><table class="table table-sm">';
+            html += `
+                <thead>
+                    <tr>
+                        <th>企业名称</th>
+                        <th>行业</th>
+                        <th>ESG评分</th>
+                        <th>等级</th>
+                        <th>评价日期</th>
+                        <th>置信度</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            history.forEach(record => {
+                const gradeColors = {
+                    'A+': 'success',
+                    'A': 'success',
+                    'B+': 'warning',
+                    'B': 'warning',
+                    'C+': 'danger',
+                    'C': 'danger'
+                };
+                const gradeColor = gradeColors[record.grade] || 'secondary';
+
+                html += `
+                    <tr>
+                        <td>${record.company_name}</td>
+                        <td>${record.industry}</td>
+                        <td><span class="badge bg-${gradeColor}">${record.overall_score}</span></td>
+                        <td><span class="badge bg-${gradeColor}">${record.grade}</span></td>
+                        <td>${record.evaluation_date}</td>
+                        <td><small>${(record.confidence_level * 100).toFixed(0)}%</small></td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            historyList.innerHTML = html;
+        }
+
+        // 碳资产估值表单提交函数
+        async function submitCarbonValuation(e) {
+            e.preventDefault();
+
+            // 根据项目类型映射到碳资产类型
+            const projectType = document.getElementById('projectType').value;
+            let carbonType = 'cer'; // 默认值
+            if (projectType === 'forestation') carbonType = 'ccer';
+            else if (projectType === 'renewable') carbonType = 'cer';
+            else if (projectType === 'energy_efficiency') carbonType = 'ver';
+
+            const formData = {
+                type: carbonType,
+                amount: parseFloat(document.getElementById('carbonAmount').value),
+                project_years: parseInt(document.getElementById('projectYear').value),
+                project_type: projectType,
+                project_location: document.getElementById('projectLocation').value
+            };
+
+            // 验证表单数据
+            if (!formData.amount || !formData.project_years || !formData.project_location) {
+                showNotification('请填写所有必填字段', 'warning');
+                return;
+            }
+
+            try {
+                // 显示加载状态
+                const submitBtn = document.querySelector('#carbonForm button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> 计算中...';
+                submitBtn.disabled = true;
+
+                const response = await fetch(`${API_BASE}/api/v1/carbon/valuation`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayCarbonResult(result.data);
+                    showNotification('碳资产估值计算完成', 'success');
+                } else {
+                    showNotification('碳资产估值失败: ' + (result.message || '未知错误'), 'error');
+                }
+            } catch (error) {
+                showNotification('网络错误: ' + error.message, 'error');
+                console.error('碳资产估值失败:', error);
+            } finally {
+                // 恢复按钮状态
+                const submitBtn = document.querySelector('#carbonForm button[type="submit"]');
+                submitBtn.innerHTML = '<i class="bi bi-currency-dollar"></i> 开始计算估值';
+                submitBtn.disabled = false;
+            }
+        }
+
+        // 显示碳资产估值结果
+        function displayCarbonResult(data) {
+            const resultDiv = document.getElementById('carbonResult');
+
+            resultDiv.innerHTML = `
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <i class="bi bi-graph-up-arrow"></i> 碳资产估值结果
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h6 class="text-muted">资产类型</h6>
+                                    <span class="badge bg-info fs-6">${data.asset_type}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h6 class="text-muted">碳汇量</h6>
+                                    <h3><span class="badge bg-success fs-3">${data.amount.toLocaleString()}</span> 吨</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h6 class="text-muted">项目年限</h6>
+                                    <h4><span class="badge bg-secondary">${data.project_years} 年</span></h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-muted">市场价格</h6>
+                                        <h4>¥${data.market_price.toFixed(2)}/吨</h4>
+                                        <small class="text-muted">基准价: ¥${data.base_price.toFixed(2)}/吨</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h6>总估值</h6>
+                                        <h2>¥${data.total_value.toLocaleString()}</h2>
+                                        <small>年增长率: ${data.growth_rate}%</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i>
+                                    <strong>估值详情：</strong>
+                                    风险等级: <span class="badge bg-warning">${data.risk_level}</span> |
+                                    估值方法: <span class="badge bg-secondary">${data.valuation_method}</span> |
+                                    计算时间: <small>${data.calculation_time}</small>
+                                </div>
+                            </div>
+                                        </div>
+                </div>
+            `;
+
+            showNotification('碳资产估值完成', 'success');
+        }
+
+        // 加载碳资产列表
+        async function loadCarbonAssets() {
+            const assetsDiv = document.getElementById('carbonAssetsList');
+            assetsDiv.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="text-muted">正在加载碳资产项目数据...</p>
+                </div>`;
+
+            try {
+                // 模拟数据，实际应该调用API
+                setTimeout(() => {
+                    const mockAssets = [
+                        { id: 1, type: '林业碳汇', location: '云南省', amount: 15000, value: 4500000, status: 'active', year: 2023 },
+                        { id: 2, type: '可再生能源', location: '内蒙古', amount: 28000, value: 8400000, status: 'active', year: 2024 },
+                        { id: 3, type: '节能改造', location: '江苏省', amount: 12000, value: 3600000, status: 'pending', year: 2023 },
+                        { id: 4, type: '甲烷回收', location: '四川省', amount: 8000, value: 2400000, status: 'active', year: 2024 },
+                        { id: 5, type: '生物质能源', location: '山东省', amount: 20000, value: 6000000, status: 'active', year: 2024 },
+                        { id: 6, type: '林业碳汇', location: '北京市', amount: 10000, value: 3500000, status: 'active', year: 2022 },
+                        { id: 7, type: '可再生能源', location: '上海市', amount: 25000, value: 9000000, status: 'active', year: 2024 },
+                        { id: 8, type: '节能改造', location: '广州市', amount: 18000, value: 5400000, status: 'pending', year: 2023 }
+                    ];
+
+                    allCarbonAssets = mockAssets;
+                    filteredCarbonAssets = mockAssets;
+
+                    updateCarbonStats();
+                    displayCarbonAssets(filteredCarbonAssets);
+                }, 1000);
+            } catch (error) {
+                assetsDiv.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                        <p class="text-danger mt-3">加载碳资产数据失败</p>
+                        <button class="btn btn-outline-primary" onclick="loadCarbonAssets()">重新加载</button>
+                    </div>`;
+                console.error('加载碳资产数据失败:', error);
+            }
+        }
+
+        // 更新碳资产统计信息
+        function updateCarbonStats() {
+            const totalProjects = filteredCarbonAssets.length;
+            const totalCarbon = filteredCarbonAssets.reduce((sum, asset) => sum + asset.amount, 0);
+            const totalValue = filteredCarbonAssets.reduce((sum, asset) => sum + asset.value, 0);
+            const avgPrice = totalCarbon > 0 ? totalValue / totalCarbon : 0;
+
+            document.getElementById('totalProjects').textContent = totalProjects;
+            document.getElementById('totalCarbon').textContent = totalCarbon.toLocaleString();
+            document.getElementById('totalValue').textContent = `¥${totalValue.toLocaleString()}`;
+            document.getElementById('avgPrice').textContent = `¥${avgPrice.toFixed(2)}`;
+            document.getElementById('projectCount').textContent = `${totalProjects} 个项目`;
+        }
+
+        // 搜索碳资产
+        function searchCarbonAssets() {
+            applyCarbonFilters();
+        }
+
+        // 筛选碳资产
+        function filterCarbonAssets() {
+            applyCarbonFilters();
+        }
+
+        // 应用碳资产筛选条件
+        function applyCarbonFilters() {
+            const searchTerm = document.getElementById('carbonSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('carbonTypeFilter').value;
+            const locationFilter = document.getElementById('carbonLocationFilter').value;
+
+            filteredCarbonAssets = allCarbonAssets.filter(asset => {
+                const matchesSearch = !searchTerm ||
+                    asset.type.toLowerCase().includes(searchTerm) ||
+                    asset.location.toLowerCase().includes(searchTerm) ||
+                    asset.id.toString().includes(searchTerm);
+
+                const matchesType = !typeFilter || asset.type === typeFilter;
+                const matchesLocation = !locationFilter || asset.location === locationFilter;
+
+                return matchesSearch && matchesType && matchesLocation;
+            });
+
+            updateCarbonStats();
+            displayCarbonAssets(filteredCarbonAssets);
+        }
+
+        // 显示碳资产列表
+        function displayCarbonAssets(assets) {
+            const assetsDiv = document.getElementById('carbonAssetsList');
+
+            if (assets.length === 0) {
+                assetsDiv.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">没有找到符合条件的碳资产项目</h5>
+                        <p class="text-muted">请尝试调整搜索或筛选条件</p>
+                        <button class="btn btn-outline-primary" onclick="resetCarbonFilters()">重置筛选</button>
+                    </div>`;
+                return;
+            }
+
+            let html = '<div class="table-responsive"><table class="table table-hover">';
+            html += `
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="bi bi-hash"></i> 项目编号</th>
+                        <th><i class="bi bi-tag"></i> 项目类型</th>
+                        <th><i class="bi bi-geo-alt"></i> 项目地点</th>
+                        <th><i class="bi bi-cloud"></i> 碳汇量</th>
+                        <th><i class="bi bi-currency-dollar"></i> 资产估值</th>
+                        <th><i class="bi bi-info-circle"></i> 状态</th>
+                        <th><i class="bi bi-gear"></i> 操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            assets.forEach(asset => {
+                const statusBadge = asset.status === 'active' ?
+                    '<span class="badge bg-success"><i class="bi bi-check-circle"></i> 运营中</span>' :
+                    '<span class="badge bg-warning"><i class="bi bi-clock"></i> 待审核</span>';
+
+                const typeIcon = {
+                    '林业碳汇': '🌳',
+                    '可再生能源': '⚡',
+                    '节能改造': '💡',
+                    '甲烷回收': '🔥',
+                    '生物质能源': '🌾'
+                }[asset.type] || '📊';
+
+                const pricePerTon = asset.amount > 0 ? (asset.value / asset.amount).toFixed(2) : '0.00';
+
+                html += `
+                    <tr class="align-middle">
+                        <td><span class="badge bg-primary">#${asset.id}</span></td>
+                        <td>
+                            <div>
+                                <strong>${typeIcon} ${asset.type}</strong>
+                                ${asset.year ? `<br><small class="text-muted">年份: ${asset.year}</small>` : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <i class="bi bi-geo-alt-fill text-danger"></i> ${asset.location}
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <strong class="text-success">${asset.amount.toLocaleString()}</strong>
+                                <br><small class="text-muted">吨CO₂</small>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <strong class="text-primary">¥${asset.value.toLocaleString()}</strong>
+                                <br><small class="text-muted">单价: ¥${pricePerTon}/吨</small>
+                            </div>
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button class="btn btn-info" onclick="viewCarbonDetails(${asset.id})" title="查看详情">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-warning" onclick="editCarbonAsset(${asset.id})" title="编辑项目">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteCarbonAsset(${asset.id})" title="删除项目">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            assetsDiv.innerHTML = html;
+        }
+
+        // 重置碳资产筛选
+        function resetCarbonFilters() {
+            document.getElementById('carbonSearch').value = '';
+            document.getElementById('carbonTypeFilter').value = '';
+            document.getElementById('carbonLocationFilter').value = '';
+
+            filteredCarbonAssets = [...allCarbonAssets];
+            updateCarbonStats();
+            displayCarbonAssets(filteredCarbonAssets);
+        }
+
+        // 查看碳资产详情
+        function viewCarbonDetails(assetId) {
+            const asset = allCarbonAssets.find(a => a.id === assetId);
+            if (asset) {
+                const pricePerTon = (asset.value / asset.amount).toFixed(2);
+                const detailsHtml = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="bi bi-tag"></i> 基本信息</h5>
+                            <p><strong>项目编号:</strong> #${asset.id}</p>
+                            <p><strong>项目类型:</strong> ${asset.type}</p>
+                            <p><strong>项目地点:</strong> ${asset.location}</p>
+                            <p><strong>项目年份:</strong> ${asset.year || '未知'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="bi bi-graph-up"></i> 价值信息</h5>
+                            <p><strong>碳汇量:</strong> ${asset.amount.toLocaleString()} 吨CO₂</p>
+                            <p><strong>资产估值:</strong> ¥${asset.value.toLocaleString()}</p>
+                            <p><strong>单价:</strong> ¥${pricePerTon}/吨</p>
+                            <p><strong>状态:</strong> ${asset.status === 'active' ? '运营中' : '待审核'}</p>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('carbonResult').innerHTML = `
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <i class="bi bi-info-circle"></i> 碳资产详情 - #${asset.id}
+                        </div>
+                        <div class="card-body">
+                            ${detailsHtml}
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="editCarbonAsset(${asset.id})">
+                                    <i class="bi bi-pencil"></i> 编辑项目
+                                </button>
+                                <button class="btn btn-secondary" onclick="loadCarbonAssets()">
+                                    <i class="bi bi-arrow-clockwise"></i> 返回列表
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // 滚动到结果区域
+                document.getElementById('carbonResult').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 显示添加碳资产模态框
+        function showAddCarbonAssetModal() {
+            document.getElementById('carbonAssetModalTitle').innerHTML =
+                '<i class="bi bi-plus-circle"></i> 添加碳资产项目';
+            document.getElementById('carbonAssetForm').reset();
+            document.getElementById('carbonAssetId').value = '';
+
+            const modal = new bootstrap.Modal(document.getElementById('carbonAssetModal'));
+            modal.show();
+        }
+
+        // 编辑碳资产
+        function editCarbonAsset(assetId) {
+            const asset = allCarbonAssets.find(a => a.id === assetId);
+            if (asset) {
+                document.getElementById('carbonAssetModalTitle').innerHTML =
+                    `<i class="bi bi-pencil"></i> 编辑碳资产项目 - #${assetId}`;
+
+                // 填充表单数据
+                document.getElementById('carbonAssetId').value = asset.id;
+                document.getElementById('modalProjectType').value = asset.type;
+                document.getElementById('modalProjectLocation').value = asset.location;
+                document.getElementById('modalCarbonAmount').value = asset.amount;
+                document.getElementById('modalAssetValue').value = asset.value;
+                document.getElementById('modalProjectYear').value = asset.year || 2024;
+                document.getElementById('modalProjectStatus').value = asset.status;
+                document.getElementById('modalProjectDescription').value = asset.description || '';
+
+                const modal = new bootstrap.Modal(document.getElementById('carbonAssetModal'));
+                modal.show();
+            }
+        }
+
+        // 保存碳资产
+        function saveCarbonAsset() {
+            const assetId = document.getElementById('carbonAssetId').value;
+            const formData = {
+                type: document.getElementById('modalProjectType').value,
+                location: document.getElementById('modalProjectLocation').value,
+                amount: parseFloat(document.getElementById('modalCarbonAmount').value),
+                value: parseFloat(document.getElementById('modalAssetValue').value),
+                year: parseInt(document.getElementById('modalProjectYear').value),
+                status: document.getElementById('modalProjectStatus').value,
+                description: document.getElementById('modalProjectDescription').value
+            };
+
+            // 验证表单
+            if (!formData.type || !formData.location || !formData.amount || !formData.value) {
+                showNotification('请填写所有必填字段', 'warning');
+                return;
+            }
+
+            if (assetId) {
+                // 编辑现有项目
+                const index = allCarbonAssets.findIndex(a => a.id === parseInt(assetId));
+                if (index !== -1) {
+                    allCarbonAssets[index] = { ...allCarbonAssets[index], ...formData };
+                    showNotification(`碳资产项目 #${assetId} 更新成功`, 'success');
+                }
+            } else {
+                // 添加新项目
+                const newAsset = {
+                    id: nextCarbonAssetId++,
+                    ...formData
+                };
+                allCarbonAssets.push(newAsset);
+                showNotification('碳资产项目添加成功', 'success');
+            }
+
+            // 关闭模态框并刷新列表
+            const modal = bootstrap.Modal.getInstance(document.getElementById('carbonAssetModal'));
+            modal.hide();
+
+            // 重新应用筛选并更新显示
+            applyCarbonFilters();
+        }
+
+        // 删除碳资产
+        function deleteCarbonAsset(assetId) {
+            const asset = allCarbonAssets.find(a => a.id === assetId);
+            if (asset) {
+                carbonAssetIdToDelete = assetId;
+
+                // 显示项目信息
+                const typeIcon = {
+                    '林业碳汇': '🌳',
+                    '可再生能源': '⚡',
+                    '节能改造': '💡',
+                    '甲烷回收': '🔥',
+                    '生物质能源': '🌾'
+                }[asset.type] || '📊';
+
+                document.getElementById('deleteAssetInfo').innerHTML = `
+                    <p><strong>项目编号:</strong> #${asset.id}</p>
+                    <p><strong>项目类型:</strong> ${typeIcon} ${asset.type}</p>
+                    <p><strong>项目地点:</strong> ${asset.location}</p>
+                    <p><strong>碳汇量:</strong> ${asset.amount.toLocaleString()} 吨CO₂</p>
+                    <p><strong>资产估值:</strong> ¥${asset.value.toLocaleString()}</p>
+                `;
+
+                const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+                modal.show();
+            }
+        }
+
+        // 确认删除碳资产
+        function confirmDeleteCarbonAsset() {
+            if (carbonAssetIdToDelete) {
+                const index = allCarbonAssets.findIndex(a => a.id === carbonAssetIdToDelete);
+                if (index !== -1) {
+                    allCarbonAssets.splice(index, 1);
+                    showNotification(`碳资产项目 #${carbonAssetIdToDelete} 删除成功`, 'success');
+
+                    // 关闭模态框
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+                    modal.hide();
+
+                    // 重新应用筛选并更新显示
+                    applyCarbonFilters();
+
+                    carbonAssetIdToDelete = null;
+                }
+            }
+        }
+
+        // ================================================
+        // 区块链功能模块 - 全面优化版本
+        // ================================================
+
+        // 加载区块链交易记录（分页和过滤）
+        async function loadBlockchainTransactions(page = 1) {
+            const blockchainDiv = document.getElementById('blockchainList');
+            blockchainDiv.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="text-muted">正在加载区块链交易数据...</p>
+                </div>
+            `;
+
+            try {
+                const pageSize = parseInt(document.getElementById('blockchainPageSize').value);
+                const typeFilter = document.getElementById('txTypeFilter').value;
+                const statusFilter = document.getElementById('txStatusFilter').value;
+                const searchTerm = document.getElementById('blockchainSearch').value.trim();
+
+                let url = `${API_BASE}/api/v1/blockchain/transactions?page=${page}&page_size=${pageSize}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    allBlockchainTransactions = data.data;
+                    blockchainTotalCount = data.pagination?.total || data.data.length;
+                    blockchainCurrentPage = page;
+                    blockchainPageSize = pageSize;
+
+                    // 应用过滤器
+                    filteredBlockchainTransactions = filterBlockchainTransactions(
+                        allBlockchainTransactions, typeFilter, statusFilter, searchTerm
+                    );
+
+                    // 更新统计信息
+                    updateBlockchainStats();
+
+                    // 更新图表
+                    updateBlockchainCharts();
+
+                    // 显示交易记录
+                    displayBlockchainTransactions(filteredBlockchainTransactions);
+
+                    // 更新分页信息
+                    updateBlockchainPagination();
+                } else {
+                    blockchainDiv.innerHTML = '<div class="alert alert-warning">暂无交易记录</div>';
+                }
+            } catch (error) {
+                console.error('加载区块链数据失败:', error);
+                blockchainDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        加载区块链数据失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // 过滤区块链交易
+        function filterBlockchainTransactions(transactions, typeFilter, statusFilter, searchTerm) {
+            return transactions.filter(tx => {
+                // 类型过滤
+                if (typeFilter && tx.transaction_type !== typeFilter) return false;
+
+                // 状态过滤
+                if (statusFilter && tx.status !== statusFilter) return false;
+
+                // 搜索过滤
+                if (searchTerm) {
+                    const searchLower = searchTerm.toLowerCase();
+                    return (
+                        tx.transaction_hash.toLowerCase().includes(searchLower) ||
+                        tx.from_address.toLowerCase().includes(searchLower) ||
+                        tx.to_address.toLowerCase().includes(searchLower) ||
+                        tx.block_number.toString().includes(searchLower)
+                    );
+                }
+
+                return true;
+            });
+        }
+
+        // 更新区块链统计信息
+        function updateBlockchainStats() {
+            // 使用API返回的总数，而不是当前页的数据条数
+            const total = blockchainTotalCount;
+
+            // 基于当前页的数据比例来估算全量的统计
+            const currentPageConfirmed = allBlockchainTransactions.filter(tx => tx.status === 'confirmed').length;
+            const currentPagePending = allBlockchainTransactions.filter(tx => tx.status === 'pending').length;
+            const currentPageTotal = allBlockchainTransactions.length;
+
+            // 按比例估算全量数据
+            const confirmedRatio = currentPageTotal > 0 ? currentPageConfirmed / currentPageTotal : 0.92;
+            const pendingRatio = currentPageTotal > 0 ? currentPagePending / currentPageTotal : 0.08;
+
+            const estimatedConfirmed = Math.floor(total * confirmedRatio);
+            const estimatedPending = total - estimatedConfirmed;
+
+            // 计算平均Gas费用（基于当前页数据）
+            const avgGas = currentPageTotal > 0 ?
+                allBlockchainTransactions.reduce((sum, tx) => sum + (tx.gas_fee / 1e18), 0) / currentPageTotal : 0.003;
+
+            document.getElementById('totalTxCount').textContent = total.toLocaleString();
+            document.getElementById('txGrowth').textContent = `+${Math.floor(Math.random() * 40 + 15)}`;
+            document.getElementById('confirmedTx').textContent = estimatedConfirmed.toLocaleString();
+            document.getElementById('confirmRate').textContent = `${((estimatedConfirmed / total) * 100).toFixed(1)}%`;
+            document.getElementById('pendingTx').textContent = estimatedPending.toLocaleString();
+            document.getElementById('avgWaitTime').textContent = `${(Math.random() * 8 + 3).toFixed(1)}s`;
+            document.getElementById('avgGas').textContent = avgGas.toFixed(4);
+        }
+
+        // 更新区块链图表
+        function updateBlockchainCharts() {
+            updateTxTypeChart();
+            updateTxVolumeChart();
+        }
+
+        // 交易类型分布图表
+        function updateTxTypeChart() {
+            const ctx = document.getElementById('txTypeChart');
+            if (!ctx) return;
+
+            const txTypes = {};
+            allBlockchainTransactions.forEach(tx => {
+                txTypes[tx.transaction_type] = (txTypes[tx.transaction_type] || 0) + 1;
+            });
+
+            const labels = Object.keys(txTypes);
+            const data = Object.values(txTypes);
+
+            if (txTypeChart) {
+                txTypeChart.destroy();
+            }
+
+            txTypeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40',
+                            '#FF6384',
+                            '#C9CBCF',
+                            '#4BC0C0',
+                            '#FF9F40'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        // 24小时交易趋势图表
+        function updateTxVolumeChart() {
+            const ctx = document.getElementById('txVolumeChart');
+            if (!ctx) return;
+
+            // 生成24小时的时间标签
+            const hours = [];
+            const volumes = [];
+            for (let i = 23; i >= 0; i--) {
+                const hour = new Date();
+                hour.setHours(hour.getHours() - i);
+                hours.push(hour.getHours() + ':00');
+                volumes.push(Math.floor(Math.random() * 50 + 10));
+            }
+
+            if (txVolumeChart) {
+                txVolumeChart.destroy();
+            }
+
+            txVolumeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: hours,
+                    datasets: [{
+                        label: '交易数量',
+                        data: volumes,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 显示区块链交易记录（增强版）
+        function displayBlockchainTransactions(transactions) {
+            const blockchainDiv = document.getElementById('blockchainList');
+
+            if (transactions.length === 0) {
+                blockchainDiv.innerHTML = `
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i>
+                        没有找到符合条件的交易记录
+                    </div>
+                `;
+                document.getElementById('txCount').textContent = '0';
+                return;
+            }
+
+            document.getElementById('txCount').textContent = transactions.length;
+
+            let html = '<div class="table-responsive"><table class="table table-hover table-sm">';
+            html += `
+                <thead class="table-light">
+                    <tr>
+                        <th><i class="bi bi-hash"></i> 交易哈希</th>
+                        <th><i class="bi bi-tag"></i> 类型</th>
+                        <th><i class="bi bi-box"></i> 区块号</th>
+                        <th><i class="bi bi-currency-exchange"></i> 金额</th>
+                        <th><i class="bi bi-lightning"></i> Gas费用</th>
+                        <th><i class="bi bi-check-circle"></i> 状态</th>
+                        <th><i class="bi bi-clock"></i> 时间</th>
+                        <th><i class="bi bi-eye"></i> 操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            transactions.forEach(tx => {
+                const statusBadge = tx.status === 'confirmed' ?
+                    '<span class="badge bg-success">已确认</span>' :
+                    '<span class="badge bg-warning">处理中</span>';
+
+                const typeColors = {
+                    'ESG评价记录': 'primary',
+                    '碳资产交易': 'success',
+                    '企业信息更新': 'info',
+                    '数据验证': 'warning',
+                    '智能合约执行': 'danger',
+                    '碳信用发行': 'dark',
+                    '资产抵押': 'secondary',
+                    '数据共享授权': 'light',
+                    '审计记录': 'dark',
+                    '合规检查': 'primary'
+                };
+
+                const typeBadge = `<span class="badge bg-${typeColors[tx.transaction_type] || 'secondary'}">${tx.transaction_type}</span>`;
+
+                html += `
+                    <tr onclick="showBlockchainTransactionDetail(${tx.id})" style="cursor: pointer;">
+                        <td>
+                            <code class="text-primary" style="font-size: 0.8rem;" title="${tx.transaction_hash}">
+                                ${tx.transaction_hash.substring(0, 10)}...${tx.transaction_hash.substring(-8)}
+                            </code>
+                        </td>
+                        <td>${typeBadge}</td>
+                        <td><span class="badge bg-light text-dark">#${tx.block_number}</span></td>
+                        <td>
+                            ${tx.amount ?
+                                `<span class="text-success">¥${tx.amount.toLocaleString()}</span>` :
+                                '<span class="text-muted">-</span>'
+                            }
+                        </td>
+                        <td>
+                            <small class="text-info">
+                                ${(tx.gas_fee / 1e18).toFixed(6)} ETH
+                            </small>
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <small class="text-muted" title="${new Date(tx.timestamp).toLocaleString()}">
+                                ${formatRelativeTime(tx.timestamp)}
+                            </small>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); showBlockchainTransactionDetail(${tx.id})">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table></div>';
+            blockchainDiv.innerHTML = html;
+        }
+
+        // 格式化相对时间
+        function formatRelativeTime(timestamp) {
+            const now = new Date();
+            const txTime = new Date(timestamp);
+            const diff = now - txTime;
+
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
+            return `${Math.floor(diff / 86400000)}天前`;
+        }
+
+        // 显示区块链交易详情
+        function showBlockchainTransactionDetail(txId) {
+            const transaction = allBlockchainTransactions.find(tx => tx.id === txId);
+            if (!transaction) return;
+
+            currentTransactionDetail = transaction;
+
+            const modalBody = document.getElementById('blockchainModalBody');
+
+            let dataHtml = '';
+            if (transaction.data && Object.keys(transaction.data).length > 0) {
+                dataHtml = `
+                    <div class="mt-3">
+                        <h6>交易数据</h6>
+                        <div class="bg-light p-3 rounded">
+                            <pre class="mb-0">${JSON.stringify(transaction.data, null, 2)}</pre>
+                        </div>
+                    </div>
+                `;
+            }
+
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>基本信息</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>交易哈希:</strong></td>
+                                <td><code>${transaction.transaction_hash}</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>区块号:</strong></td>
+                                <td>${transaction.block_number}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>交易类型:</strong></td>
+                                <td>${transaction.transaction_type}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>状态:</strong></td>
+                                <td>${transaction.status === 'confirmed' ?
+                                    '<span class="badge bg-success">已确认</span>' :
+                                    '<span class="badge bg-warning">处理中</span>'
+                                }</td>
+                            </tr>
+                            <tr>
+                                <td><strong>时间:</strong></td>
+                                <td>${new Date(transaction.timestamp).toLocaleString()}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>交易详情</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>发送方:</strong></td>
+                                <td><code>${transaction.from_address}</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>接收方:</strong></td>
+                                <td><code>${transaction.to_address}</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>金额:</strong></td>
+                                <td>${transaction.amount ? '¥' + transaction.amount.toLocaleString() : '-'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gas使用量:</strong></td>
+                                <td>${transaction.gas_used.toLocaleString()}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gas价格:</strong></td>
+                                <td>${(transaction.gas_price / 1e9).toFixed(2)} Gwei</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gas费用:</strong></td>
+                                <td>${(transaction.gas_fee / 1e18).toFixed(6)} ETH</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                ${dataHtml}
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('blockchainModal'));
+            modal.show();
+        }
+
+        // 复制交易哈希
+        function copyTransactionHash() {
+            if (!currentTransactionDetail) return;
+
+            navigator.clipboard.writeText(currentTransactionDetail.transaction_hash).then(() => {
+                showNotification('交易哈希已复制到剪贴板', 'success');
+            }).catch(err => {
+                console.error('复制失败:', err);
+                showNotification('复制失败', 'error');
+            });
+        }
+
+        // 更新区块链分页信息
+        function updateBlockchainPagination() {
+            const start = (blockchainCurrentPage - 1) * blockchainPageSize + 1;
+            const end = Math.min(blockchainCurrentPage * blockchainPageSize, blockchainTotalCount);
+
+            document.getElementById('blockchainStart').textContent = start;
+            document.getElementById('blockchainEnd').textContent = end;
+            document.getElementById('blockchainTotal').textContent = blockchainTotalCount;
+        }
+
+        // 区块链分页函数
+        function loadBlockchainPage(page) {
+            loadBlockchainTransactions(page);
+        }
+
+        function loadBlockchainPreviousPage() {
+            if (blockchainCurrentPage > 1) {
+                loadBlockchainTransactions(blockchainCurrentPage - 1);
+            }
+        }
+
+        function loadBlockchainNextPage() {
+            const maxPage = Math.ceil(blockchainTotalCount / blockchainPageSize);
+            if (blockchainCurrentPage < maxPage) {
+                loadBlockchainTransactions(blockchainCurrentPage + 1);
+            }
+        }
+
+        function changeBlockchainPageSize() {
+            blockchainCurrentPage = 1;
+            loadBlockchainTransactions(1);
+        }
+
+        // 搜索区块链交易
+        function searchBlockchain() {
+            loadBlockchainTransactions(1);
+        }
+
+        // 实时监控区块链交易
+        function startRealTimeBlockchain() {
+            if (blockchainRealTimeInterval) {
+                stopRealTimeBlockchain();
+                return;
+            }
+
+            showNotification('开始实时监控区块链交易', 'info');
+            loadBlockchainTransactions();
+
+            blockchainRealTimeInterval = setInterval(() => {
+                loadBlockchainTransactions(blockchainCurrentPage);
+            }, 5000);
+
+            // 更新按钮状态
+            const btn = event.target.closest('button');
+            btn.innerHTML = '<i class="bi bi-stop-circle"></i> 停止监控';
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-danger');
+        }
+
+        function stopRealTimeBlockchain() {
+            if (blockchainRealTimeInterval) {
+                clearInterval(blockchainRealTimeInterval);
+                blockchainRealTimeInterval = null;
+                showNotification('停止实时监控', 'info');
+
+                // 更新按钮状态
+                const btn = document.querySelector('button[onclick="startRealTimeBlockchain()"]');
+                if (btn) {
+                    btn.innerHTML = '<i class="bi bi-play-circle"></i> 实时监控';
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-success');
+                }
+            }
+        }
+
+        // 监听过滤器和搜索框变化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 绑定区块链过滤事件
+            const txTypeFilter = document.getElementById('txTypeFilter');
+            const txStatusFilter = document.getElementById('txStatusFilter');
+            const blockchainSearch = document.getElementById('blockchainSearch');
+
+            if (txTypeFilter) txTypeFilter.addEventListener('change', () => loadBlockchainTransactions(1));
+            if (txStatusFilter) txStatusFilter.addEventListener('change', () => loadBlockchainTransactions(1));
+            if (blockchainSearch) {
+                blockchainSearch.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') {
+                        loadBlockchainTransactions(1);
+                    }
+                });
+            }
+        });
+
+        // 加载系统监控数据
+        async function loadMonitorData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/system/status`);
+                const data = await response.json();
+
+                // 更新系统资源使用率
+                const cpuUsage = data.system_resources?.cpu_percent || Math.random() * 30 + 40;
+                const memoryUsage = data.system_resources?.memory_percent || Math.random() * 20 + 60;
+                const diskUsage = data.system_resources?.disk_percent || Math.random() * 15 + 45;
+
+                updateResourceDisplay('cpu', cpuUsage);
+                updateResourceDisplay('memory', memoryUsage);
+                updateResourceDisplay('disk', diskUsage);
+                updateNetworkLatency();
+
+                // 更新API性能指标
+                updateApiMetrics();
+
+                // 初始化性能图表
+                initPerformanceChart();
+            } catch (error) {
+                console.error('加载监控数据失败:', error);
+                // 使用模拟数据
+                loadMockMonitorData();
+            }
+        }
+
+        // 加载模拟监控数据
+        function loadMockMonitorData() {
+            const cpuUsage = Math.random() * 30 + 40;
+            const memoryUsage = Math.random() * 20 + 60;
+            const diskUsage = Math.random() * 15 + 45;
+
+            updateResourceDisplay('cpu', cpuUsage);
+            updateResourceDisplay('memory', memoryUsage);
+            updateResourceDisplay('disk', diskUsage);
+            updateNetworkLatency();
+            updateApiMetrics();
+            initPerformanceChart();
+        }
+
+        // 更新资源显示
+        function updateResourceDisplay(resource, value) {
+            const percentage = Math.round(value);
+            document.getElementById(`${resource}Progress`).style.width = `${percentage}%`;
+            document.getElementById(`${resource}Usage`).textContent = `${percentage}%`;
+        }
+
+        // 更新网络延迟
+        function updateNetworkLatency() {
+            const latency = Math.floor(Math.random() * 50 + 10);
+            document.getElementById('networkProgress').style.width = `${latency}%`;
+            document.getElementById('networkLatency').textContent = `${latency}ms`;
+        }
+
+        // 更新API指标
+        function updateApiMetrics() {
+            const apiCalls = Math.floor(Math.random() * 1000 + 2000);
+            const responseTime = (Math.random() * 0.3 + 0.1).toFixed(2);
+            const errorRate = (Math.random() * 2).toFixed(1);
+            const p95ResponseTime = (Math.random() * 0.5 + 0.5).toFixed(2);
+
+            document.getElementById('apiCalls').textContent = apiCalls.toLocaleString();
+            document.getElementById('responseTime').textContent = `${responseTime}s`;
+            document.getElementById('errorRate').textContent = `${errorRate}%`;
+            document.getElementById('p95ResponseTime').textContent = `${p95ResponseTime}s`;
+        }
+
+        // 初始化性能图表
+        function initPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            if (performanceChart) performanceChart.destroy();
+
+            // 生成模拟数据
+            const labels = [];
+            const data = [];
+            for (let i = 23; i >= 0; i--) {
+                const time = new Date();
+                time.setHours(time.getHours() - i);
+                labels.push(time.getHours() + ':00');
+                data.push(Math.random() * 100 + 150);
+            }
+
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'API响应时间 (ms)',
+                        data: data,
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 开始监控（定期更新数据）
+        function startMonitoring() {
+            // 每5秒更新一次监控数据
+            setInterval(() => {
+                if (currentPage === 'monitoring') {
+                    loadMonitorData();
+                }
+            }, 5000);
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            const alertClass = {
+                'success': 'alert-success',
+                'error': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            }[type] || 'alert-info';
+
+            const alertHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show position-fixed"
+                     style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info-circle'}"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+
+            // 3秒后自动消失
+            setTimeout(() => {
+                const alert = document.querySelector('.alert:last-of-type');
+                if (alert) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        // 导出企业数据
+        function exportCompanies() {
+            showNotification('正在准备导出数据...', 'info');
+            setTimeout(() => {
+                showNotification('企业数据导出成功', 'success');
+            }, 1500);
+        }
+
+        // 加载ESG评价的企业列表
+        async function loadESGCompanies() {
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/companies?page_size=156`);
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const companySelect = document.getElementById('companyId');
+                    companySelect.innerHTML = '<option value="">请选择企业...</option>';
+
+                    // 按企业名称排序
+                    const sortedCompanies = data.data.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+
+                    sortedCompanies.forEach(company => {
+                        const option = document.createElement('option');
+                        option.value = company.id;
+                        option.textContent = `${company.name} (${company.industry})`;
+                        companySelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('加载企业列表失败:', error);
+            }
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载仪表盘数据
+            loadDashboardData();
+
+            // 加载企业列表到ESG评价表单
+            loadESGCompanies();
+
+            // 绑定碳资产估值表单事件
+            const carbonForm = document.getElementById('carbonForm');
+            if (carbonForm) {
+                carbonForm.addEventListener('submit', submitCarbonValuation);
+                console.log('碳资产估值表单事件绑定成功');
+            }
+
+            // 初始化工具提示
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有卡片添加悬停效果
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+
+        // 分页相关函数
+        function changeCompanyPage(page) {
+            const totalPages = Math.ceil(allCompanies.length / companiesPerPage);
+            if (page >= 1 && page <= totalPages) {
+                companyCurrentPage = page;
+                displayCompaniesPage();
+            }
+        }
+
+      </script>
+
+    <!-- 碳资产管理模态框 -->
+    <div class="modal fade" id="carbonAssetModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="carbonAssetModalTitle">
+                        <i class="bi bi-plus-circle"></i> 添加碳资产项目
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="carbonAssetForm">
+                        <input type="hidden" id="carbonAssetId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">🌱 项目类型</label>
+                                    <select class="form-select" id="modalProjectType" required>
+                                        <option value="">请选择项目类型...</option>
+                                        <option value="林业碳汇">🌳 林业碳汇</option>
+                                        <option value="可再生能源">⚡ 可再生能源</option>
+                                        <option value="节能改造">💡 节能改造</option>
+                                        <option value="甲烷回收">🔥 甲烷回收</option>
+                                        <option value="生物质能源">🌾 生物质能源</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">📍 项目地点</label>
+                                    <input type="text" class="form-control" id="modalProjectLocation" placeholder="请输入项目地点" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">☁️ 碳汇量 (吨CO₂)</label>
+                                    <input type="number" class="form-control" id="modalCarbonAmount" min="1" step="0.01" placeholder="请输入碳汇量" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">💰 资产估值 (元)</label>
+                                    <input type="number" class="form-control" id="modalAssetValue" min="0" step="0.01" placeholder="请输入估值" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">📅 项目年份</label>
+                                    <input type="number" class="form-control" id="modalProjectYear" min="2020" max="2024" value="2024" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">📊 项目状态</label>
+                                    <select class="form-select" id="modalProjectStatus" required>
+                                        <option value="active">🟢 运营中</option>
+                                        <option value="pending">🟡 待审核</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">📝 项目描述</label>
+                            <textarea class="form-control" id="modalProjectDescription" rows="3" placeholder="请输入项目描述信息（可选）"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> 取消
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="saveCarbonAsset()">
+                        <i class="bi bi-check-circle"></i> 保存项目
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle"></i> 确认删除
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="bi bi-trash text-danger" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">您确定要删除这个碳资产项目吗？</h5>
+                        <p class="text-muted">此操作不可撤销，删除后数据将无法恢复。</p>
+                        <div class="alert alert-warning mt-3">
+                            <strong>项目信息：</strong>
+                            <div id="deleteAssetInfo"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> 取消
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteCarbonAsset()">
+                        <i class="bi bi-trash"></i> 确认删除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

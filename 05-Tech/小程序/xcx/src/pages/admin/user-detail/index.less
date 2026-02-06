@@ -1,0 +1,234 @@
+/**
+ * 用户详情页面样式
+ */
+@import '../styles/variables.less';
+
+.user-detail-page {
+  min-height: 100vh;
+  background: @bg-color;
+}
+
+.content-scroll {
+  padding: @spacing-md;
+}
+
+/* 加载和错误状态 */
+.loading-state,
+.error-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 200px 0;
+  color: @text-color-secondary;
+}
+
+/* 用户信息卡片 */
+.info-card {
+  background: linear-gradient(135deg, @primary-color, #5BA3F5);
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  margin-bottom: @spacing-md;
+  color: @white;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: @spacing-md;
+}
+
+.avatar-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: @spacing-md;
+}
+
+.avatar-text {
+  font-size: 40px;
+  color: @white;
+  font-weight: 500;
+}
+
+.user-meta {
+  flex: 1;
+}
+
+.user-name-large {
+  display: block;
+  font-size: @font-size-xl;
+  font-weight: 600;
+  color: @white;
+  margin-bottom: 8px;
+}
+
+.user-openid {
+  font-size: @font-size-sm;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.join-date {
+  display: flex;
+  align-items: center;
+  padding-top: @spacing-sm;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.join-label,
+.join-value {
+  font-size: @font-size-sm;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.join-value {
+  margin-left: @spacing-sm;
+}
+
+/* 区块卡片 */
+.section-card {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  margin-bottom: @spacing-md;
+}
+
+.section-title {
+  display: block;
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: @spacing-md;
+}
+
+/* 统计网格 */
+.stats-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: @spacing-sm;
+}
+
+.stat-item {
+  text-align: center;
+  padding: @spacing-sm;
+  background: @bg-color;
+  border-radius: @radius-sm;
+}
+
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: 600;
+  color: @primary-color;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: @font-size-xs;
+  color: @text-color-secondary;
+}
+
+/* 题型统计 */
+.type-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+}
+
+.type-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: @spacing-sm;
+  background: @bg-color;
+  border-radius: @radius-sm;
+}
+
+.type-stat-name {
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+.type-stat-bars {
+  display: flex;
+  align-items: center;
+  gap: @spacing-md;
+}
+
+.type-stat-count {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+.type-stat-accuracy {
+  font-size: @font-size-sm;
+  color: @primary-color;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* 学习记录 */
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+}
+
+.record-item {
+  padding: @spacing-md;
+  background: @bg-color;
+  border-radius: @radius-sm;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.record-type {
+  font-size: @font-size-base;
+  color: @text-color-primary;
+  font-weight: 500;
+}
+
+.record-score {
+  font-size: @font-size-base;
+  color: @primary-color;
+  font-weight: 600;
+}
+
+.record-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-info,
+.record-time {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+/* 操作栏 */
+.action-bar {
+  padding: @spacing-md 0;
+}
+
+.back-btn {
+  background: @white;
+  border-radius: @radius-md;
+  padding: @spacing-md;
+  text-align: center;
+}
+
+.back-text {
+  color: @text-color-primary;
+  font-size: @font-size-base;
+}

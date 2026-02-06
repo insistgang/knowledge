@@ -1,0 +1,12 @@
+1. 数据预处理阶段：
+task1_complete_preprocessing.m 完整预处理流程   
+task1_resample_simple.m 32kHz重采样
+2. 滑动窗口分段：
+task1_sliding_window_corrected.m - 修正版滑动窗口
+3. 特征提取（最核心）：
+extract_50selected_features - 50精选特征提取
+4. 目标域处理：
+preprocess_target_task1_features.m - 目标域预处理     
+align_normalize_domains.m - 域对齐标准化
+5. 可视化分析：
+visualize_50features_simple.m - 50特征对比可视化

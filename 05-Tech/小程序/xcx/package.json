@@ -1,0 +1,37 @@
+{
+  "name": "ai-tutor-miniprogram",
+  "version": "1.0.0",
+  "description": "AI语文助手 - 微信小程序",
+  "main": "index.js",
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "dev:weapp": "npm run build:weapp -- --watch"
+  },
+  "dependencies": {
+    "@tarojs/components": "^3.6.24",
+    "@tarojs/helper": "^3.6.24",
+    "@tarojs/plugin-framework-react": "^3.6.24",
+    "@tarojs/plugin-platform-weapp": "^3.6.24",
+    "@tarojs/react": "^3.6.24",
+    "@tarojs/runtime": "^3.6.24",
+    "@tarojs/taro": "^3.6.24",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@tarojs/cli": "^3.6.24",
+    "@tarojs/webpack5-runner": "^3.6.24",
+    "@types/react": "^18.2.0",
+    "@types/webpack-env": "^1.18.0",
+    "babel-preset-taro": "^3.6.24",
+    "eslint": "^8.12.0",
+    "eslint-config-taro": "^3.6.24",
+    "eslint-plugin-react": "^7.8.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "pngjs": "^7.0.0",
+    "stylelint": "^14.4.0",
+    "webpack": "^5.78.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

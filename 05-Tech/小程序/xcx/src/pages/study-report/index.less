@@ -1,0 +1,146 @@
+/**
+ * 学习报告样式
+ */
+@import '../../styles/variables.less';
+
+.study-report-page {
+  min-height: 100vh;
+  background: @bg-color;
+}
+
+.time-range-tabs {
+  display: flex;
+  background: @white;
+  padding: @spacing-md;
+  gap: @spacing-md;
+}
+
+.tab {
+  flex: 1;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @bg-color;
+  border-radius: @radius-md;
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+}
+
+.tab.active {
+  background: @primary-color;
+  color: @white;
+}
+
+.content-scroll {
+  height: calc(100vh - 112px);
+  padding: @spacing-md;
+}
+
+/* 统计卡片 */
+.stats-cards {
+  display: flex;
+  gap: @spacing-sm;
+  margin-bottom: @spacing-lg;
+}
+
+.stat-item {
+  flex: 1;
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg @spacing-md;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: @shadow-sm;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: @primary-color;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+/* 图表 */
+.chart-section {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  margin-bottom: @spacing-lg;
+  box-shadow: @shadow-sm;
+}
+
+.section-title {
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: @spacing-lg;
+}
+
+.chart-placeholder {
+  height: 200px;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.bar {
+  width: 24px;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 8px;
+  min-height: 5px;
+}
+
+.bar-label {
+  font-size: @font-size-xs;
+  color: @text-color-secondary;
+}
+
+/* 学习建议 */
+.tips-section {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  box-shadow: @shadow-sm;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-md;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: @spacing-sm;
+}
+
+.tip-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: @font-size-base;
+  color: @text-color-primary;
+  line-height: 1.6;
+}

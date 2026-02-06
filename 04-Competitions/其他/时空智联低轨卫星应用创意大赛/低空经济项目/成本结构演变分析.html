@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>成本结构演变分析</title>
+<style>
+body {
+    font-family: "Microsoft YaHei", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.header {
+    background-color: #2962ff;
+    color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.card-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    flex: 1;
+    min-width: 300px;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.card .subtitle {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.chart-container {
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Pie charts with visible percentages */
+.pie-chart {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    border-radius: 50%;
+}
+
+.pie-chart.initial {
+    background: conic-gradient(
+        #1db954 0% 50%,
+        #f9a825 50% 75%,
+        #9c27b0 75% 100%
+    );
+}
+
+.pie-chart.mature {
+    background: conic-gradient(
+        #f9a825 0% 60%,
+        #1db954 60% 85%,
+        #9c27b0 85% 100%
+    );
+}
+
+/* White percentage labels on pie charts */
+.percent-label {
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Position for each percentage */
+.infra-label {
+    top: 35%;
+    left: 25%;
+}
+
+.ops-label {
+    top: 35%;
+    right: 25%;
+}
+
+.mgmt-label {
+    bottom: 35%;
+    left: 48%;
+}
+
+.tech-label {
+    top: 30%;
+    left: 30%;
+}
+
+.infra2-label {
+    bottom: 40%;
+    right: 30%;
+}
+
+.mgmt2-label {
+    bottom: 30%;
+    left: 50%;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.color-infrastructure {
+    background-color: #1db954;
+}
+
+.color-operation {
+    background-color: #f9a825;
+}
+
+.color-management {
+    background-color: #9c27b0;
+}
+
+.color-tech {
+    background-color: #f9a825;
+}
+
+/* Improved line chart */
+.line-chart {
+    height: 200px;
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+}
+
+.line-graph {
+    position: relative;
+    height: 160px;
+    width: 100%;
+    background: linear-gradient(to bottom, rgba(255,235,238,0.2), rgba(255,235,238,0.6));
+    border-radius: 4px;
+}
+
+/* Changed to descending line */
+.line {
+    position: absolute;
+    height: 2px;
+    background-color: #e91e63;
+    width: 80%;
+    top: 30px;
+    left: 10%;
+    transform: rotate(15deg);
+}
+
+.line::before, .line::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #e91e63;
+}
+
+.line::before {
+    top: -3px;
+    left: -3px;
+}
+
+.line::after {
+    top: -3px;
+    right: -3px;
+}
+
+.line-label {
+    position: absolute;
+    background-color: rgba(139, 195, 74, 0.2);
+    color: #689f38;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Improved axes labels */
+.x-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.x-label {
+    font-size: 12px;
+    color: #666;
+    flex: 1;
+    text-align: center;
+}
+
+.y-axis {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #999;
+    padding-left: 5px;
+}
+
+.y-label {
+    position: absolute;
+}
+
+.y-label:nth-child(1) {
+    top: 10px;
+}
+
+.y-label:nth-child(2) {
+    top: 70px;
+}
+
+.y-label:nth-child(3) {
+    top: 130px;
+}
+
+.bottom-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.info-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    flex: 1;
+    min-width: 300px;
+}
+
+.info-title {
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #2962ff;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.cost-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.cost-icon {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.strategy-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.strategy-dot {
+    margin-right: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #2962ff;
+    margin-top: 6px;
+}
+
+.kpi-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.kpi-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.kpi-details {
+    flex: 1;
+}
+
+.kpi-title {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.kpi-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+</style>
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <h1>成本结构演变分析</h1>
+        <p>从初期到成熟期的业务成本优化路径与结构变化</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card-row">
+        <div class="card">
+            <h2>初期成本结构</h2>
+            <div class="subtitle">项目启动阶段 (1-12个月)</div>
+            <div class="chart-container">
+                <div class="pie-chart initial">
+                    <span class="percent-label infra-label">50%</span>
+                    <span class="percent-label ops-label">25%</span>
+                    <span class="percent-label mgmt-label">25%</span>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color color-infrastructure"></div>
+                    <span>基础设施投资</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-operation"></div>
+                    <span>运营成本</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-management"></div>
+                    <span>管理与市场费用</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>单位配送成本趋势</h2>
+            <div class="subtitle">三年周期内的成本变化</div>
+            <div class="chart-container">
+                <div class="line-chart">
+                    <div class="y-axis">
+                        <span class="y-label">100</span>
+                        <span class="y-label">60</span>
+                        <span class="y-label">20</span>
+                    </div>
+                    <div class="line-graph">
+                        <div class="line"></div>
+                        <div class="line-label">成本下降 45%</div>
+                    </div>
+                    <div class="x-axis">
+                        <div class="x-label">第一年</div>
+                        <div class="x-label">第二年</div>
+                        <div class="x-label">第三年</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>成熟期成本结构</h2>
+            <div class="subtitle">运营稳定阶段 (36个月后)</div>
+            <div class="chart-container">
+                <div class="pie-chart mature">
+                    <span class="percent-label tech-label">60%</span>
+                    <span class="percent-label infra2-label">25%</span>
+                    <span class="percent-label mgmt2-label">15%</span>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color color-tech"></div>
+                    <span>技术研发投入</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-infrastructure"></div>
+                    <span>基础设施投资</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-management"></div>
+                    <span>管理与市场费用</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-section">
+        <div class="info-card">
+            <div class="info-title">成本项目明细</div>
+            
+            <div class="cost-item">
+                <div class="cost-icon" style="background-color: #1db954;">●</div>
+                <div>
+                    <h3>基础设施投资</h3>
+                    <p>包括卫星通信系统、无人机设备、物流站与区域配送中心建设、运输工具等资本性支出</p>
+                </div>
+            </div>
+            
+            <div class="cost-item">
+                <div class="cost-icon" style="background-color: #f9a825;">●</div>
+                <div>
+                    <h3>运营成本</h3>
+                    <p>包括能源消耗、设备维护保养、技术人员薪资、保险费用、日常运营支出等变动成本</p>
+                </div>
+            </div>
+            
+            <div class="cost-item">
+                <div class="cost-icon" style="background-color: #9c27b0;">●</div>
+                <div>
+                    <h3>管理与市场费用</h3>
+                    <p>包括品牌建设、市场推广活动、客户服务中心、管理团队、新领域行业开拓等</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-title">成本优化策略</div>
+            
+            <div class="strategy-item">
+                <div class="strategy-dot"></div>
+                <div>规模化协同工作流程，提高跨部门协作效率</div>
+            </div>
+            
+            <div class="strategy-item">
+                <div class="strategy-dot"></div>
+                <div>无人机群智能调度系统升级，优化飞行路径与装载率</div>
+            </div>
+            
+            <div class="strategy-item">
+                <div class="strategy-dot"></div>
+                <div>引入AI辅助决策系统，降低人力依赖</div>
+            </div>
+            
+            <div class="strategy-item">
+                <div class="strategy-dot"></div>
+                <div>能源管理优化，提高可再生能源使用比例</div>
+            </div>
+            
+            <div class="strategy-item">
+                <div class="strategy-dot"></div>
+                <div>标准化物流单元设计，提高装载效率</div>
+            </div>
+        </div>
+        
+        <div class="info-card">
+            <div class="info-title">关键绩效指标</div>
+            
+            <div class="kpi-item">
+                <div class="kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19M5 12H19" stroke="#2962ff" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-title">单位成本降低率</div>
+                    <div class="kpi-value">45%</div>
+                </div>
+            </div>
+            
+            <div class="kpi-item">
+                <div class="kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 4V8M12 12V20M4 12H8M12 12H20" stroke="#f9a825" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-title">研发投入占比提升</div>
+                    <div class="kpi-value">+35%</div>
+                </div>
+            </div>
+            
+            <div class="kpi-item">
+                <div class="kpi-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 14L8 10L12 14L20 6M19 10V6H15" stroke="#7b1fa2" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="kpi-details">
+                    <div class="kpi-title">运营效率提升</div>
+                    <div class="kpi-value">60%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

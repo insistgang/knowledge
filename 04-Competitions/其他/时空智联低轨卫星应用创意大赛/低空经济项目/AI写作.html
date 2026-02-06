@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI写作与学术诚信图表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .chart-container {
+            margin: 30px 0;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .chart-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        .chart-desc {
+            text-align: center;
+            font-style: italic;
+            margin-top: 10px;
+            color: #666;
+        }
+        #balance-scale {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            position: relative;
+        }
+        .scale {
+            width: 30px;
+            height: 300px;
+            background-color: #555;
+            position: relative;
+        }
+        .beam {
+            width: 500px;
+            height: 20px;
+            background-color: #555;
+            position: absolute;
+            top: 100px;
+            left: calc(50% - 250px);
+            transform-origin: center;
+            transform: rotate(-15deg);
+        }
+        .plate {
+            width: 150px;
+            height: 10px;
+            background-color: #777;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .plate1 {
+            left: 30px;
+            top: 150px;
+        }
+        .plate2 {
+            right: 30px;
+            top: 50px;
+        }
+        .item {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+        .efficiency {
+            background-color: #4CAF50;
+            left: 45px;
+            top: 40px;
+        }
+        .integrity {
+            background-color: #2196F3;
+            right: 45px;
+            top: -60px;
+        }
+        #venn-diagram {
+            position: relative;
+            width: 500px;
+            height: 300px;
+            margin: 0 auto;
+        }
+        .circle {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+        .ai-circle {
+            background-color: #FF9800;
+            top: 40px;
+            left: 70px;
+        }
+        .human-circle {
+            background-color: #03A9F4;
+            top: 40px;
+            right: 70px;
+        }
+        .intersection {
+            position: absolute;
+            top: 130px;
+            left: 220px;
+            font-weight: bold;
+            font-size: 0.9em;
+            width: 60px;
+            text-align: center;
+        }
+        .venn-label {
+            position: absolute;
+            width: 100px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .ai-label {
+            top: 140px;
+            left: 110px;
+        }
+        .human-label {
+            top: 140px;
+            right: 110px;
+        }
+        #timeline {
+            width: 80%;
+            margin: 0 auto;
+            position: relative;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .timeline-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background-color: #555;
+            top: 50%;
+        }
+        .timeline-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #E91E63;
+            top: calc(50% - 10px);
+            transform: translateY(-50%);
+        }
+        .timeline-label {
+            position: absolute;
+            width: 150px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .upper-label {
+            top: -30px;
+            transform: translateX(-50%);
+        }
+        .lower-label {
+            bottom: -70px;
+            transform: translateX(-50%);
+        }
+        #framework {
+            width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .framework-box {
+            background-color: #f5f5f5;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid;
+            font-weight: bold;
+        }
+        .regulation {
+            border-left-color: #E91E63;
+        }
+        .education {
+            border-left-color: #FF9800;
+        }
+        .technology {
+            border-left-color: #2196F3;
+        }
+        .assessment {
+            border-left-color: #4CAF50;
+        }
+        #challenges {
+            width: 600px;
+            margin: 0 auto;
+        }
+        .challenge-item {
+            display: flex;
+            margin: 15px 0;
+            align-items: center;
+        }
+        .challenge-icon {
+            flex: 0 0 50px;
+            height: 50px;
+            background-color: #f44336;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .challenge-text {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #benefits {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .benefit-item {
+            width: 45%;
+            margin: 10px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .benefit-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="chart-title">图1：AI写作的优势</div>
+        <div id="benefits">
+            <div class="benefit-item">
+                <div class="benefit-title">1. 降低语言障碍</div>
+                <div>帮助非母语学者更准确地表达研究成果，提高论文语言质量</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-title">2. 提升写作效率</div>
+                <div>快速生成结构提纲，自动概括材料，提供写作建议，节省时间</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-title">3. 语义重构与润色</div>
+                <div>优化语言表达，统一学术语调，降低重复率，提升写作技巧</div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-title">4. 提高学术可达性</div>
+                <div>作为"辅助型作者"，促进学术资源民主化与知识共享</div>
+            </div>
+        </div>
+        <div class="chart-desc">建议放置位置：第一部分"AI写作为学术写作提供了前所未有的便利"的末尾</div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-title">图2：AI写作对学术诚信的挑战</div>
+        <div id="challenges">
+            <div class="challenge-item">
+                <div class="challenge-icon">!</div>
+                <div class="challenge-text">
+                    <strong>原创性存疑</strong>：AI生成内容具有高度"拼贴性"，难以界定为完全原创作品
+                </div>
+            </div>
+            <div class="challenge-item">
+                <div class="challenge-icon">!</div>
+                <div class="challenge-text">
+                    <strong>责任归属不明</strong>：AI不具备自主意识，其生成内容的责任归属尚未明确界定
+                </div>
+            </div>
+            <div class="challenge-item">
+                <div class="challenge-icon">!</div>
+                <div class="challenge-text">
+                    <strong>助长学术懒惰</strong>：可能导致"形式合规"现象，抑制批判性思维与独立写作能力
+                </div>
+            </div>
+            <div class="challenge-item">
+                <div class="challenge-icon">!</div>
+                <div class="challenge-text">
+                    <strong>知识漏洞掩盖</strong>：AI可能"编造"引文或数据，威胁学术研究的严谨性与可验证性
+                </div>
+            </div>
+        </div>
+        <div class="chart-desc">建议放置位置：第二部分"AI写作对学术诚信构成严峻挑战"的末尾</div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-title">图3：解决AI写作与学术诚信冲突的框架</div>
+        <div id="framework">
+            <div class="framework-box regulation">制度保障：制定明确的AI使用规范</div>
+            <div class="framework-box education">根本手段：加强学术伦理教育</div>
+            <div class="framework-box technology">技术保障：推动AI技术透明化与可解释性</div>
+            <div class="framework-box assessment">配套措施：更新评估机制</div>
+        </div>
+        <div class="chart-desc">建议放置位置：第三部分"在规范中引导AI写作，保障学术诚信底线"的末尾</div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-title">图4：AI写作与人类学术工作的关系</div>
+        <div id="venn-diagram">
+            <div class="circle ai-circle">AI能力</div>
+            <div class="circle human-circle">人类能力</div>
+            <div class="intersection">理想协作区</div>
+            <div class="venn-label ai-label">高效、规范、大量处理</div>
+            <div class="venn-label human-label">创新、批判、伦理判断</div>
+        </div>
+        <div class="chart-desc">建议放置位置：文章结论前</div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-title">效率与诚信的平衡</div>
+        <div id="balance-scale">
+            <div class="scale"></div>
+            <div class="beam"></div>
+            <div class="plate plate1"></div>
+            <div class="plate plate2"></div>
+            <div class="item efficiency">写作效率</div>
+            <div class="item integrity">学术诚信</div>
+        </div>
+        <div class="chart-desc">建议放置位置：文章结论部分，突出"在效率与诚信之间找到平衡点"这一核心观点</div>
+    </div>
+</body>
+</html>

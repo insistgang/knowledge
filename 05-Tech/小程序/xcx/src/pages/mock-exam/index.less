@@ -1,0 +1,411 @@
+/**
+ * 模拟考试样式
+ */
+@import '../../styles/variables.less';
+
+.mock-exam-page {
+  min-height: 100vh;
+  background: @bg-color;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 加载中 */
+.exam-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loading-text {
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+}
+
+/* 考试介绍页 */
+.exam-intro {
+  padding: @spacing-xl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: @text-color-primary;
+  margin-bottom: @spacing-xl;
+}
+
+.intro-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-md;
+  margin-bottom: @spacing-xl;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: @spacing-lg;
+  background: @white;
+  border-radius: @radius-lg;
+}
+
+.info-label {
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+}
+
+.info-value {
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @primary-color;
+}
+
+.intro-tips {
+  width: 100%;
+  padding: @spacing-lg;
+  background: fade(@warning-color, 10%);
+  border-radius: @radius-lg;
+  margin-bottom: @spacing-xl;
+}
+
+.tips-title {
+  font-size: @font-size-base;
+  font-weight: 600;
+  color: @warning-color;
+  margin-bottom: @spacing-sm;
+  display: block;
+}
+
+.tips-item {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  line-height: 1.8;
+  display: block;
+}
+
+/* 开始按钮 */
+.start-btn {
+  width: 80%;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @primary-color;
+  color: @white;
+  border-radius: @radius-lg;
+  font-size: @font-size-xl;
+  font-weight: 600;
+  box-shadow: 0 4px 12px fade(@primary-color, 30%);
+}
+
+.start-btn:active {
+  background: fade(@primary-color, 80%);
+  transform: scale(0.98);
+}
+
+/* 顶部 */
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: @spacing-md;
+  background: @white;
+  border-bottom: 1px solid @border-color-light;
+}
+
+.time-display {
+  font-size: 36px;
+  font-weight: bold;
+  color: @danger-color;
+  font-family: monospace;
+}
+
+.header-actions {
+  display: flex;
+  gap: @spacing-md;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-icon {
+  font-size: 32px;
+}
+
+.action-text {
+  font-size: @font-size-xs;
+  color: @text-color-secondary;
+}
+
+/* 答题卡 */
+.answer-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: @spacing-lg;
+}
+
+.card-inner {
+  background: @white;
+  border-radius: @radius-lg;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: @spacing-lg;
+  border-bottom: 1px solid @border-color-light;
+}
+
+.card-title {
+  font-size: @font-size-lg;
+  font-weight: 600;
+}
+
+.card-close {
+  font-size: 48px;
+  color: @text-color-placeholder;
+  line-height: 1;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: @spacing-sm;
+  padding: @spacing-lg;
+}
+
+.card-item {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @bg-color;
+  border-radius: @radius-sm;
+  font-size: @font-size-sm;
+  color: @text-color-primary;
+}
+
+.card-item.answered {
+  background: @primary-color;
+  color: @white;
+}
+
+.card-item.current {
+  border: 2px solid @primary-color;
+}
+
+.card-item.unanswered {
+  background: @white;
+  border: 1px solid @border-color;
+}
+
+/* 题目 */
+.content-scroll {
+  flex: 1;
+}
+
+.question-content {
+  padding: @spacing-lg;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: @spacing-sm;
+  margin-bottom: @spacing-md;
+}
+
+.question-num {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+.question-type {
+  padding: 4px 12px;
+  background: fade(@primary-color, 10%);
+  color: @primary-color;
+  border-radius: @radius-sm;
+  font-size: @font-size-xs;
+}
+
+.question-text {
+  display: block;
+  font-size: @font-size-lg;
+  color: @text-color-primary;
+  line-height: 1.8;
+  margin-bottom: @spacing-xl;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-md;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: @spacing-lg;
+  background: @white;
+  border-radius: @radius-lg;
+  border: 2px solid @border-color;
+}
+
+.option-item.selected {
+  border-color: @primary-color;
+  background: fade(@primary-color, 5%);
+}
+
+.option-radio {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid @border-color;
+  margin-right: @spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-item.selected .option-radio {
+  border-color: @primary-color;
+}
+
+.radio-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: @primary-color;
+}
+
+.option-text {
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+/* 底部导航 */
+.exam-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: @spacing-md;
+  background: @white;
+  border-top: 1px solid @border-color-light;
+}
+
+.nav-btn {
+  padding: 12px 32px;
+  background: @white;
+  border: 1px solid @border-color;
+  border-radius: @radius-md;
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+.nav-btn.disabled {
+  color: @text-color-placeholder;
+}
+
+.nav-btn.submit {
+  background: @danger-color;
+  color: @white;
+  border-color: @danger-color;
+}
+
+.progress-text {
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+}
+
+/* 结果 */
+.exam-result {
+  min-height: 100vh;
+  background: @bg-color;
+  padding: @spacing-xl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: @spacing-xl;
+}
+
+.result-score {
+  font-size: 120px;
+  font-weight: bold;
+  color: @primary-color;
+  line-height: 1;
+}
+
+.result-text {
+  font-size: @font-size-xl;
+  color: @text-color-secondary;
+}
+
+.result-stats {
+  display: flex;
+  gap: @spacing-lg;
+  margin-bottom: @spacing-xl;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 48px;
+  font-weight: bold;
+  color: @text-color-primary;
+}
+
+.stat-label {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+.result-actions {
+  display: flex;
+  gap: @spacing-md;
+  width: 100%;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @white;
+  color: @text-color-primary;
+  border-radius: @radius-md;
+  font-size: @font-size-base;
+}
+
+.action-btn.primary {
+  background: @primary-color;
+  color: @white;
+}

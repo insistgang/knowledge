@@ -1,0 +1,261 @@
+/**
+ * 管理后台页面样式
+ */
+@import './styles/variables.less';
+
+.admin-page {
+  min-height: 100vh;
+  background: @bg-color;
+}
+
+/* 标签栏 */
+.tab-bar {
+  display: flex;
+  background: @white;
+  border-bottom: 1px solid @border-color-light;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24px 0;
+  position: relative;
+}
+
+.tab-text {
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+}
+
+.tab-item.active .tab-text {
+  color: @primary-color;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 3px;
+  background: @primary-color;
+  border-radius: 2px;
+}
+
+.content-scroll {
+  padding: @spacing-md;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 0;
+}
+
+/* 数据总览 */
+.stats-container {
+  padding-bottom: @spacing-md;
+}
+
+.stats-section {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  margin-bottom: @spacing-md;
+}
+
+.section-title {
+  margin-bottom: @spacing-md;
+}
+
+.title-text {
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @text-color-primary;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: @spacing-md;
+}
+
+.stat-card {
+  background: @bg-color;
+  border-radius: @radius-md;
+  padding: @spacing-md;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 48px;
+  font-weight: bold;
+  color: @primary-color;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+/* 题型统计 */
+.type-stats {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+}
+
+.type-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: @spacing-sm @spacing-md;
+  background: @bg-color;
+  border-radius: @radius-sm;
+}
+
+.type-name {
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+.type-count {
+  font-size: @font-size-sm;
+  color: @primary-color;
+  font-weight: 500;
+}
+
+.empty-text {
+  text-align: center;
+  color: @text-color-placeholder;
+  padding: @spacing-lg;
+}
+
+/* 操作栏 */
+.action-bar {
+  margin-top: @spacing-lg;
+}
+
+.refresh-btn {
+  background: @primary-color;
+  border-radius: @radius-md;
+  padding: @spacing-md;
+  text-align: center;
+}
+
+.refresh-text {
+  color: @white;
+  font-size: @font-size-base;
+}
+
+/* 用户列表 */
+.users-container {
+  padding-bottom: @spacing-md;
+}
+
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: @spacing-md;
+  padding: 0 @spacing-sm;
+}
+
+.users-title {
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @text-color-primary;
+}
+
+.users-count {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  background: @white;
+  border-radius: @radius-md;
+  padding: @spacing-md;
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: @primary-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: @spacing-md;
+}
+
+.avatar-text {
+  color: @white;
+  font-size: @font-size-lg;
+  font-weight: 500;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: @font-size-base;
+  color: @text-color-primary;
+  margin-bottom: 8px;
+}
+
+.user-stats-mini {
+  display: flex;
+  gap: @spacing-lg;
+}
+
+.stat-mini {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+.user-arrow {
+  font-size: 32px;
+  color: @text-color-placeholder;
+}
+
+/* 分页 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: @spacing-lg;
+  margin-top: @spacing-lg;
+  padding: @spacing-md;
+}
+
+.page-btn {
+  padding: @spacing-sm @spacing-lg;
+  background: @white;
+  border-radius: @radius-sm;
+}
+
+.page-info {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}

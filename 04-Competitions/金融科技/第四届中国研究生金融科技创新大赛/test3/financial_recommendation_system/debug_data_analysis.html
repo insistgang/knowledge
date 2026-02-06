@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>数据分析调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .data { background: white; padding: 10px; margin: 10px 0; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #e9ecef; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>数据分析报告调试页面</h1>
+
+    <div class="section">
+        <h2>步骤1: 获取客户数据</h2>
+        <button onclick="fetchCustomerData()">1. 获取客户数据</button>
+        <div id="customerResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>步骤2: 检查投资建议</h2>
+        <div id="investmentAdvice"></div>
+    </div>
+
+    <div class="section">
+        <h2>步骤3: 提交反馈</h2>
+        <button onclick="submitFeedback()">3. 提交测试反馈</button>
+        <div id="feedbackResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>步骤4: 获取分析数据</h2>
+        <button onclick="fetchAnalytics()">4. 获取分析数据</button>
+        <div id="analyticsResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>步骤5: 生成数据分析报告</h2>
+        <button onclick="generateReport()">5. 生成报告</button>
+        <div id="reportResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>完整数据日志</h2>
+        <pre id="fullLog"></pre>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentCustomer = null;
+        let logData = [];
+
+        // 日志记录
+        function log(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            logData.push(`[${timestamp}] ${message}`);
+            if (data) {
+                logData.push(JSON.stringify(data, null, 2));
+            }
+            document.getElementById('fullLog').textContent = logData.join('\n\n');
+        }
+
+        // 获取客户数据
+        async function fetchCustomerData() {
+            try {
+                log('开始获取客户数据...');
+                const response = await fetch(`${API_BASE}/api/customers/CDB91DCCE198B10A522FE2AABF6A8D81`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentCustomer = data.customer;
+                    log('✓ 客户数据获取成功', data);
+
+                    // 显示客户基本信息
+                    document.getElementById('customerResult').innerHTML = `
+                        <div class="success">✓ 客户数据获取成功</div>
+                        <div class="data">
+                            <p><strong>客户ID:</strong> ${data.customer.cust_no}</p>
+                            <p><strong>年龄:</strong> ${data.customer.age}</p>
+                            <p><strong>性别:</strong> ${data.customer.gender === 'M' ? '男' : '女'}</p>
+                            <p><strong>教育背景:</strong> ${data.customer.edu_bg}</p>
+                            <p><strong>客户价值:</strong> ${data.customer.isHighValue ? '高价值' : '普通'}</p>
+                        </div>
+                    `;
+
+                    // 显示投资建议
+                    if (data.customerInsight) {
+                        log('✓ 找到客户洞察数据', data.customerInsight);
+                        document.getElementById('investmentAdvice').innerHTML = `
+                            <div class="success">✓ 投资建议存在</div>
+                            <div class="data">
+                                <p><strong>风险偏好:</strong> ${data.customerInsight.riskLevel || '未定义'}</p>
+                                <p><strong>适合类别:</strong> ${data.customerInsight.suitableCategories?.join(', ') || '未定义'}</p>
+                                <p><strong>投资能力:</strong> ${data.customerInsight.investmentCapacity || '未定义'}</p>
+                                <p><strong>建议:</strong> ${data.customerInsight.recommendation || '暂无建议'}</p>
+                            </div>
+                        `;
+                    } else {
+                        log('✗ 没有找到 customerInsight 数据');
+                        document.getElementById('investmentAdvice').innerHTML = `
+                            <div class="error">✗ 没有找到投资建议数据</div>
+                        `;
+                    }
+                } else {
+                    throw new Error('获取失败');
+                }
+            } catch (error) {
+                log('✗ 获取客户数据失败', error.message);
+                document.getElementById('customerResult').innerHTML = `
+                    <div class="error">✗ 错误: ${error.message}</div>
+                `;
+            }
+        }
+
+        // 提交反馈
+        async function submitFeedback() {
+            if (!currentCustomer) {
+                alert('请先获取客户数据');
+                return;
+            }
+
+            try {
+                log('开始提交反馈...');
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.cust_no}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        feedback: [{
+                            productId: 'SAVE_NEW_001',
+                            productName: '大额存单',
+                            feedback: 'interested'
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                log('反馈提交响应', data);
+
+                if (response.ok) {
+                    document.getElementById('feedbackResult').innerHTML = `
+                        <div class="success">✓ 反馈提交成功</div>
+                        <div class="data">
+                            <p><strong>总样本数:</strong> ${data.samples?.totalSamples || 0}</p>
+                            <p><strong>正样本:</strong> ${data.samples?.positiveSamples || 0}</p>
+                            <p><strong>负样本:</strong> ${data.samples?.negativeSamples || 0}</p>
+                            <p><strong>准确率提升:</strong> ${data.accuracyImprovement || '待计算'}</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || '提交失败');
+                }
+            } catch (error) {
+                log('✗ 反馈提交失败', error.message);
+                document.getElementById('feedbackResult').innerHTML = `
+                    <div class="error">✗ 错误: ${error.message}</div>
+                `;
+            }
+        }
+
+        // 获取分析数据
+        async function fetchAnalytics() {
+            if (!currentCustomer) {
+                alert('请先获取客户数据');
+                return;
+            }
+
+            try {
+                log('开始获取分析数据...');
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.custNo}/next-recommendations`);
+                const data = await response.json();
+
+                log('分析数据响应', data);
+
+                document.getElementById('analyticsResult').innerHTML = `
+                    <div class="success">✓ 分析数据获取成功</div>
+                    <div class="data">
+                        <p><strong>推荐策略:</strong> ${data.nextStep}</p>
+                        <p><strong>置信度:</strong> ${data.confidence}</p>
+                        <p><strong>总样本数:</strong> ${data.analysis?.totalSamples || 0}</p>
+                        <p><strong>正样本:</strong> ${data.analysis?.positiveSamples || 0}</p>
+                        <p><strong>负样本:</strong> ${data.analysis?.negativeSamples || 0}</p>
+                    </div>
+                `;
+            } catch (error) {
+                log('✗ 获取分析数据失败', error.message);
+                document.getElementById('analyticsResult').innerHTML = `
+                    <div class="error">✗ 错误: ${error.message}</div>
+                `;
+            }
+        }
+
+        // 生成报告
+        function generateReport() {
+            if (!currentCustomer) {
+                alert('请先获取客户数据');
+                return;
+            }
+
+            log('开始生成数据分析报告...');
+
+            const report = `
+                <h3>客户价值分析</h3>
+                <div class="data">
+                    <p><strong>客户ID:</strong> ${currentCustomer.cust_no}</p>
+                    <p><strong>年龄:</strong> ${currentCustomer.age}岁</p>
+                    <p><strong>性别:</strong> ${currentCustomer.gender === 'M' ? '男' : '女'}</p>
+                    <p><strong>教育背景:</strong> ${currentCustomer.edu_bg}</p>
+                    <p><strong>婚姻状况:</strong> ${currentCustomer.marriage_situ_cd}</p>
+                    <p><strong>客户价值:</strong> ${currentCustomer.isHighValue ?
+                        '<span style="color:green">高价值客户</span>' :
+                        '<span style="color:blue">普通客户</span>'}</p>
+                    <p><strong>年收入:</strong> ¥${(currentCustomer.annualIncome || 0).toLocaleString()}</p>
+                    <p><strong>总资产:</strong> ¥${(currentCustomer.assets || 0).toLocaleString()}</p>
+                </div>
+
+                <h3>风险评估</h3>
+                <div class="data">
+                    <p><strong>风险评分:</strong> ${currentCustomer.riskProfile?.riskScore || 50}/100</p>
+                    <p><strong>风险偏好:</strong> ${currentCustomer.riskProfile?.overallRisk || '未评估'}</p>
+                    <p><strong>投资经验:</strong> ${currentCustomer.riskProfile?.investmentExperience || '未评估'}</p>
+                    <p><strong>投资偏好:</strong> ${currentCustomer.riskProfile?.preferenceType || '未评估'}</p>
+                </div>
+
+                <h3>投资建议</h3>
+                <div class="data">
+                    <p><strong>建议类型:</strong> ${currentCustomer.age >= 60 ? '保守型投资' : '均衡型投资'}</p>
+                    <p><strong>推荐产品:</strong> ${currentCustomer.age >= 60 ?
+                        '储蓄类、保障类产品' : '混合配置，包含稳健理财'}</p>
+                    <p><strong>风险提示:</strong> ${currentCustomer.age >= 75 ?
+                        '建议避免高风险投资' : '可适当配置成长型产品'}</p>
+                </div>
+            `;
+
+            document.getElementById('reportResult').innerHTML = `
+                <div class="success">✓ 报告生成成功</div>
+                ${report}
+            `;
+
+            log('✓ 报告生成成功');
+        }
+
+        // 页面加载完成后自动执行第一步
+        window.onload = function() {
+            fetchCustomerData();
+        };
+    </script>
+</body>
+</html>

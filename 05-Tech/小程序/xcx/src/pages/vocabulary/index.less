@@ -1,0 +1,384 @@
+/**
+ * 词汇学习样式
+ */
+@import '../../styles/variables.less';
+
+.vocabulary-page {
+  min-height: 100vh;
+  background: @bg-color;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: @spacing-md;
+  background: @white;
+  gap: @spacing-sm;
+}
+
+.search-input {
+  flex: 1;
+  height: 72px;
+  padding: 0 @spacing-md;
+  background: @bg-color;
+  border-radius: @radius-md;
+  font-size: @font-size-base;
+}
+
+.search-btn {
+  padding: 0 @spacing-lg;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @primary-color;
+  color: @white;
+  border-radius: @radius-md;
+  font-size: @font-size-base;
+}
+
+.content-scroll {
+  flex: 1;
+  padding: @spacing-md;
+}
+
+/* 词详情 */
+.word-detail {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+}
+
+.word-header {
+  text-align: center;
+  padding-bottom: @spacing-md;
+  margin-bottom: @spacing-md;
+  border-bottom: 1px solid @border-color-light;
+}
+
+.word-title {
+  display: block;
+  font-size: 64px;
+  font-weight: bold;
+  color: @text-color-primary;
+  margin-bottom: 8px;
+}
+
+.word-pinyin {
+  display: block;
+  font-size: @font-size-lg;
+  color: @text-color-secondary;
+}
+
+.word-section {
+  margin-bottom: @spacing-lg;
+}
+
+.section-label {
+  display: block;
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  margin-bottom: @spacing-sm;
+}
+
+.section-content {
+  display: block;
+  font-size: @font-size-base;
+  color: @text-color-primary;
+  line-height: 1.8;
+}
+
+.section-content.example {
+  color: @primary-color;
+  font-style: italic;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: @spacing-sm;
+}
+
+.tag {
+  padding: 8px 16px;
+  border-radius: @radius-sm;
+  font-size: @font-size-sm;
+}
+
+.tag-primary {
+  background: fade(@primary-color, 10%);
+  color: @primary-color;
+}
+
+.tag-danger {
+  background: fade(@danger-color, 10%);
+  color: @danger-color;
+}
+
+/* 每日推荐 */
+.daily-section {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+}
+
+.section-title {
+  font-size: @font-size-lg;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: @spacing-md;
+}
+
+.word-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+}
+
+.word-item {
+  padding: @spacing-md;
+  background: @bg-color;
+  border-radius: @radius-md;
+}
+
+.item-word {
+  display: block;
+  font-size: @font-size-xl;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: 4px;
+}
+
+.item-pinyin {
+  display: block;
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  margin-bottom: 8px;
+}
+
+.item-def {
+  display: block;
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  line-height: 1.6;
+}
+
+/* 答题模式样式 */
+.progress-bar {
+  height: 8px;
+  background: @border-color-light;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: @primary-color;
+  transition: width 0.3s ease;
+}
+
+.question-card {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-xl;
+  box-shadow: @shadow-sm;
+  margin-bottom: @spacing-md;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: @spacing-lg;
+}
+
+.question-num {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+}
+
+.question-tag {
+  padding: 8px 16px;
+  background: fade(@primary-color, 10%);
+  color: @primary-color;
+  border-radius: @radius-sm;
+  font-size: @font-size-sm;
+}
+
+/* 收藏按钮 */
+.favorite-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: @bg-color;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.favorite-btn.loading {
+  opacity: 0.6;
+}
+
+.favorite-btn.favorited {
+  background: fade(#FFC107, 15%);
+}
+
+.favorite-icon {
+  font-size: 24px;
+  color: @text-color-placeholder;
+  line-height: 1;
+}
+
+.favorite-btn.favorited .favorite-icon {
+  color: #FFC107;
+}
+
+.question-content {
+  margin-bottom: @spacing-xl;
+}
+
+.question-text {
+  font-size: @font-size-lg;
+  color: @text-color-primary;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-md;
+  margin-bottom: @spacing-lg;
+}
+
+.option-item {
+  padding: @spacing-lg;
+  background: @bg-color;
+  border-radius: @radius-md;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.option-item.correct {
+  background: fade(@success-color, 15%);
+  border: 1px solid @success-color;
+}
+
+.option-item.wrong {
+  background: fade(@danger-color, 15%);
+  border: 1px solid @danger-color;
+}
+
+.option-text {
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+.option-icon {
+  font-size: @font-size-xl;
+  font-weight: bold;
+}
+
+.option-item.correct .option-icon {
+  color: @success-color;
+}
+
+.option-item.wrong .option-icon {
+  color: @danger-color;
+}
+
+.explanation-box {
+  padding: @spacing-lg;
+  background: fade(@warning-color, 10%);
+  border-radius: @radius-md;
+  margin-bottom: @spacing-lg;
+}
+
+.explanation-label {
+  display: block;
+  font-size: @font-size-sm;
+  color: @warning-color;
+  font-weight: 600;
+  margin-bottom: @spacing-sm;
+}
+
+.explanation-text {
+  font-size: @font-size-sm;
+  color: @text-color-primary;
+  line-height: 1.6;
+}
+
+.next-btn {
+  padding: @spacing-lg;
+  background: @primary-color;
+  color: @white;
+  border-radius: @radius-md;
+  text-align: center;
+  font-size: @font-size-base;
+}
+
+.result-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: @spacing-xl;
+}
+
+.result-card {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-xl * 1.5;
+  text-align: center;
+  box-shadow: @shadow-md;
+  width: 100%;
+}
+
+.result-title {
+  display: block;
+  font-size: @font-size-xl;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: @spacing-md;
+}
+
+.result-score {
+  display: block;
+  font-size: 64px;
+  font-weight: bold;
+  color: @primary-color;
+  margin-bottom: @spacing-md;
+}
+
+.result-desc {
+  display: block;
+  font-size: @font-size-base;
+  color: @text-color-secondary;
+  margin-bottom: @spacing-xl * 1.5;
+}
+
+.result-actions {
+  display: flex;
+  gap: @spacing-md;
+}
+
+.action-btn {
+  flex: 1;
+  padding: @spacing-lg;
+  background: @primary-color;
+  color: @white;
+  border-radius: @radius-md;
+  text-align: center;
+  font-size: @font-size-base;
+}
+
+.action-btn.secondary {
+  background: @bg-color;
+  color: @text-color-primary;
+}

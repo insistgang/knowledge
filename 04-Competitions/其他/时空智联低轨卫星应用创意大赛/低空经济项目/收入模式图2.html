@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.org-chart {
+    width: 1000px;
+    margin: 30px auto;
+    font-family: "Microsoft YaHei", Arial, sans-serif;
+    position: relative;
+}
+
+.title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 40px;
+    font-weight: bold;
+}
+
+.level {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.box {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 0 10px;
+    position: relative;
+}
+
+.main-box {
+    background: #B3E0FF;
+    padding: 15px 40px;
+    font-size: 18px;
+}
+
+.second-level {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+    position: relative;
+}
+
+.second-box {
+    padding: 12px 20px;
+    border-radius: 8px;
+    position: relative;
+    width: 180px;
+    text-align: center;
+}
+
+.percentage {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* 颜色方案 */
+.basic-service {
+    background: #C8E6C9;
+}
+
+.value-service {
+    background: #FFE0B2;
+}
+
+.platform-share {
+    background: #FFF9C4;
+}
+
+.equipment-rent {
+    background: #E1BEE7;
+}
+
+.third-level {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+}
+
+.third-box {
+    padding: 8px 15px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    margin: 5px 5px;
+    text-align: center;
+}
+
+.column {
+    width: 25%;
+    position: relative;
+}
+
+/* 主要连接线 */
+.main-vertical-line {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: #666;
+    top: 125px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 第一层到第二层的水平线 */
+.horizontal-line-main {
+    position: absolute;
+    height: 2px;
+    background: #666;
+    top: 144px;
+    left: 12.5%;
+    width: 75%;
+}
+
+/* 从水平线到二级盒子的垂直线 */
+.vertical-line-to-second {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: #666;
+    top: 144px;
+}
+
+/* 第二层到第三层的垂直线 */
+.vertical-line-from-second {
+    position: absolute;
+    width: 2px;
+    height: 8ch;
+    background: #666;
+    top: 68px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 第三层的水平线 */
+.horizontal-line-third {
+    position: absolute;
+    height: 2px;
+    background: #666;
+    top: 201px;
+    width: 80%;
+    left: 10%;
+}
+</style>
+</head>
+<body>
+<div class="org-chart">
+    <div class="title">低空经济无人机物流收入模式构成图</div>
+    
+    <!-- 第一层 -->
+    <div class="level">
+        <div class="box main-box">总体收入结构</div>
+    </div>
+    
+    <!-- 主垂直连接线 -->
+    <div class="main-vertical-line"></div>
+    
+    <!-- 水平连接线 -->
+    <div class="horizontal-line-main"></div>
+    
+    <!-- 第一层到第二层的四条垂直线 -->
+    <div class="vertical-line-to-second" style="left: 12.5%; transform: translateX(-1px);"></div>
+    <div class="vertical-line-to-second" style="left: 37.5%; transform: translateX(-1px);"></div>
+    <div class="vertical-line-to-second" style="left: 62.5%; transform: translateX(-1px);"></div>
+    <div class="vertical-line-to-second" style="left: 87.5%; transform: translateX(-1px);"></div>
+
+    <!-- 第二层 -->
+    <div class="second-level">
+        <div class="second-box basic-service">
+            基础配送服务费
+            <div class="percentage">40-50%收入占比</div>
+            <!-- 垂直线连接第二层到第三层 -->
+            <div class="vertical-line-from-second"></div>
+        </div>
+        <div class="second-box value-service">
+            增值服务收费
+            <div class="percentage">20-25%收入占比</div>
+            <!-- 垂直线连接第二层到第三层 -->
+            <div class="vertical-line-from-second"></div>
+        </div>
+        <div class="second-box platform-share">
+            平台合作分成
+            <div class="percentage">15-20%收入占比</div>
+            <!-- 垂直线连接第二层到第三层 -->
+            <div class="vertical-line-from-second"></div>
+        </div>
+        <div class="second-box equipment-rent">
+            设备租赁与定制
+            <div class="percentage">10-15%收入占比</div>
+            <!-- 垂直线连接第二层到第三层 -->
+            <div class="vertical-line-from-second"></div>
+        </div>
+    </div>
+
+    <!-- 第二层到第三层的四条水平线 -->
+    <!-- <div class="horizontal-line-third" style="left: 12.5%; width: 12.5%;"></div>
+    <div class="horizontal-line-third" style="left: 37.5%; width: 12.5%;"></div>
+    <div class="horizontal-line-third" style="left: 62.5%; width: 12.5%;"></div>
+    <div class="horizontal-line-third" style="left: 87.5%; width: 12.5%;"></div> -->
+
+    <!-- 第三层 -->
+    <div class="third-level">
+        <div class="column">
+            <div class="third-box">标准配送</div>
+            <div class="third-box">会员订制</div>
+            <div class="third-box">阶梯差异化定价</div>
+        </div>
+        <div class="column">
+            <div class="third-box">定时配送</div>
+            <div class="third-box">特殊物品处理</div>
+            <div class="third-box">隐私配送</div>
+            <div class="third-box">加急优先</div>
+        </div>
+        <div class="column">
+            <div class="third-box">电商平台分成</div>
+            <div class="third-box">数据服务费</div>
+            <div class="third-box">广告展示收入</div>
+            <div class="third-box">场景推荐服务</div>
+        </div>
+        <div class="column">
+            <div class="third-box">专用机队租赁</div>
+            <div class="third-box">行业解决方案</div>
+            <div class="third-box">技术咨询服务</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(start:*)",
+      "Bash(rm:*)",
+      "Bash(taskkill:*)",
+      "Bash(more:*)",
+      "Bash(nul:*)",
+      "Bash(cmd /c \"taskkill /PID 27248 /F\")",
+      "Bash(dir:*)",
+      "Bash(powershell:*)",
+      "Bash(jq:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

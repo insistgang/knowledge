@@ -1,0 +1,9 @@
+{
+  "metadata": {
+    "name": "AI语文助手题库",
+    "version": "1.0.0",
+    "total": 5400,
+    "generated": "2025-01-04",
+    "description": "基于原始真题生成的模拟题库，10倍扩展"
+  },
+  "questions": [

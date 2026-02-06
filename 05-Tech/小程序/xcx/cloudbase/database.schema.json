@@ -1,0 +1,188 @@
+{
+  "database": "AI语文助手云数据库设计",
+  "collections": [
+    {
+      "name": "users",
+      "description": "用户信息表",
+      "permissions": {
+        "read": "doc._openid == auth.openid",
+        "write": "doc._openid == auth.openid"
+      },
+      "indexes": [
+        { "name": "_openid", "fields": { "_openid": 1 }, "unique": true }
+      ],
+      "schema": {
+        "_id": "string",
+        "_openid": "string",
+        "nickname": "string",
+        "avatar": "string",
+        "settings": "object",
+        "createdAt": "date",
+        "updatedAt": "date"
+      }
+    },
+    {
+      "name": "questions_bank",
+      "description": "题目库表（共5976题）",
+      "permissions": {
+        "read": true,
+        "write": false
+      },
+      "indexes": [
+        { "name": "type", "fields": { "type": 1 } },
+        { "name": "difficulty", "fields": { "difficulty": 1 } },
+        { "name": "type_difficulty", "fields": { "type": 1, "difficulty": 1 } }
+      ],
+      "schema": {
+        "_id": "string",
+        "type": "string",
+        "question": "string",
+        "options": "array",
+        "correctAnswer": "string|number",
+        "explanation": "string",
+        "source": "string",
+        "difficulty": "string",
+        "year": "number",
+        "tags": "array"
+      }
+    },
+    {
+      "name": "study_records",
+      "description": "学习记录表",
+      "permissions": {
+        "read": "doc._openid == auth.openid",
+        "write": "doc._openid == auth.openid"
+      },
+      "indexes": [
+        { "name": "user_type", "fields": { "_openid": 1, "type": 1 } },
+        { "name": "createdAt", "fields": { "createdAt": -1 } }
+      ],
+      "schema": {
+        "_id": "string",
+        "_openid": "string",
+        "type": "string",
+        "title": "string",
+        "score": "number",
+        "duration": "number",
+        "totalQuestions": "number",
+        "correctAnswers": "number",
+        "completionRate": "number",
+        "createdAt": "date"
+      }
+    },
+    {
+      "name": "chat_history",
+      "description": "聊天历史表",
+      "permissions": {
+        "read": "doc._openid == auth.openid",
+        "write": "doc._openid == auth.openid"
+      },
+      "indexes": [
+        { "name": "conversation", "fields": { "_openid": 1, "conversationId": 1 } },
+        { "name": "createdAt", "fields": { "createdAt": -1 } }
+      ],
+      "schema": {
+        "_id": "string",
+        "_openid": "string",
+        "conversationId": "string",
+        "role": "string",
+        "content": "string",
+        "createdAt": "date"
+      }
+    },
+    {
+      "name": "answer_history",
+      "description": "答题历史表",
+      "permissions": {
+        "read": "doc._openid == auth.openid",
+        "write": "doc._openid == auth.openid"
+      },
+      "indexes": [
+        { "name": "user_question", "fields": { "_openid": 1, "questionId": 1 } },
+        { "name": "isCorrect", "fields": { "_openid": 1, "isCorrect": 1 } }
+      ],
+      "schema": {
+        "_id": "string",
+        "_openid": "string",
+        "questionId": "string",
+        "answer": "string",
+        "isCorrect": "boolean",
+        "createdAt": "date"
+      }
+    },
+    {
+      "name": "favorites",
+      "description": "收藏题目表",
+      "permissions": {
+        "read": "doc._openid == auth.openid",
+        "write": "doc._openid == auth.openid"
+      },
+      "indexes": [
+        { "name": "user_question", "fields": { "_openid": 1, "questionId": 1 }, "unique": true }
+      ],
+      "schema": {
+        "_id": "string",
+        "_openid": "string",
+        "questionId": "string",
+        "createdAt": "date"
+      }
+    },
+    {
+      "name": "vocabulary",
+      "description": "词汇表",
+      "permissions": {
+        "read": true,
+        "write": false
+      },
+      "indexes": [
+        { "name": "word", "fields": { "word": 1 }, "unique": true }
+      ],
+      "schema": {
+        "_id": "string",
+        "word": "string",
+        "pinyin": "string",
+        "definition": "string",
+        "example": "string",
+        "synonyms": "array",
+        "antonyms": "array",
+        "category": "string"
+      }
+    },
+    {
+      "name": "idioms",
+      "description": "成语表",
+      "permissions": {
+        "read": true,
+        "write": false
+      },
+      "indexes": [
+        { "name": "idiom", "fields": { "idiom": 1 }, "unique": true }
+      ],
+      "schema": {
+        "_id": "string",
+        "idiom": "string",
+        "pinyin": "string",
+        "definition": "string",
+        "example": "string",
+        "source": "string"
+      }
+    },
+    {
+      "name": "word_favorites",
+      "description": "收藏词语表",
+      "permissions": {
+        "read": "doc._openid == auth.openid",
+        "write": "doc._openid == auth.openid"
+      },
+      "indexes": [
+        { "name": "user_word", "fields": { "_openid": 1, "word": 1 }, "unique": true }
+      ],
+      "schema": {
+        "_id": "string",
+        "_openid": "string",
+        "word": "string",
+        "createdAt": "date"
+      }
+    }
+  ]
+}

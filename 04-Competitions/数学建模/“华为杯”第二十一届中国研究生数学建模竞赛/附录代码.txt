@@ -1,0 +1,97 @@
+
+% 读取Excel文件，指定从第二行开始读取数据，第一行是表头
+filename = '附件一（训练集）.xlsx';  % 请将文件名替换为实际文件名
+data = readtable(filename, 'ReadVariableNames', true);
+
+% 提取第二列（频率）和第三列（磁芯损耗）数据
+frequency = data{2:3400, 2};
+core_loss = data{2:3400, 3};
+
+% 绘制频率和磁芯损耗的分布图
+figure;
+subplot(1, 2, 1);
+histogram(frequency, 'Normalization', 'pdf');
+hold on;
+pd_freq = fitdist(frequency, 'Normal');
+x_values = linspace(min(frequency), max(frequency), 100);
+plot(x_values, pdf(pd_freq, x_values), 'r', 'LineWidth', 2);%
+title('Frequency Distribution with Fitted Normal Curve');
+xlabel('Frequency');
+ylabel('Probability Density');
+
+subplot(1, 2, 2);
+histogram(core_loss, 'Normalization', 'pdf');
+hold on;
+pd_core_loss = fitdist(core_loss, 'Normal');
+x_values = linspace(min(core_loss), max(core_loss), 100);
+plot(x_values, pdf(pd_core_loss, x_values), 'r', 'LineWidth', 2);
+title('Core Loss Distribution with Fitted Normal Curve');
+xlabel('Core Loss');
+ylabel('Probability Density');
+
+% 正态性检验 (Kolmogorov-Smirnov test)
+[h_freq, p_freq] = kstest((frequency - mean(frequency)) / std(frequency));
+[h_core_loss, p_core_loss] = kstest((core_loss - mean(core_loss)) / std(core_loss));
+
+% 判断正态分布并应用3σ法或箱线图检测异常值
+if p_freq > 0.05
+    disp('Frequency follows a normal distribution, applying 3-Sigma method.');
+    mean_freq = mean(frequency);
+    std_freq = std(frequency);
+    upper_bound_freq = mean_freq + 3 * std_freq;
+    lower_bound_freq = mean_freq - 3 * std_freq;
+    
+    % 3σ法检测频率异常值
+    freq_outliers = frequency(frequency > upper_bound_freq | frequency < lower_bound_freq);
+    
+    % 绘制结果
+    figure;
+    histogram(frequency, 'Normalization', 'pdf');
+    hold on;
+    xline(upper_bound_freq, 'r--', 'LineWidth', 2, 'Label', 'Upper 3σ Bound');
+    xline(lower_bound_freq, 'r--', 'LineWidth', 2, 'Label', 'Lower 3σ Bound');
+    title('3-Sigma Method for Frequency');
+    xlabel('Frequency');
+    ylabel('Probability Density');
+else
+    disp('Frequency does not follow a normal distribution, applying Boxplot method.');
+    % 绘制箱线图检测频率的异常值
+    figure;
+    boxplot(frequency);
+    title('Boxplot for Frequency');
+end
+
+if p_core_loss > 0.05
+    disp('Core loss follows a normal distribution, applying 3-Sigma method.');
+    mean_core_loss = mean(core_loss);
+    std_core_loss = std(core_loss);
+    upper_bound_core_loss = mean_core_loss + 3 * std_core_loss;
+    lower_bound_core_loss = mean_core_loss - 3 * std_core_loss;
+    
+    % 3σ法检测磁芯损耗的异常值
+    core_loss_outliers = core_loss(core_loss > upper_bound_core_loss | core_loss < lower_bound_core_loss);
+    
+    % 绘制结果
+    figure;
+    histogram(core_loss, 'Normalization', 'pdf');
+    hold on;
+    xline(upper_bound_core_loss, 'r--', 'LineWidth', 2, 'Label', 'Upper 3σ Bound');
+    xline(lower_bound_core_loss, 'r--', 'LineWidth', 2, 'Label', 'Lower 3σ Bound');%
+    title('3-Sigma Method for Core Loss');
+    xlabel('Core Loss');
+    ylabel('Probability Density');
+else
+    disp('Core loss does not follow a normal distribution, applying Boxplot method.');
+    % 绘制箱线图检测磁芯损耗的异常值
+    figure;
+    boxplot(core_loss);
+    title('Boxplot for Core Loss');
+end
+
+
+% Model:              cixinsunhaomoxingcailiao2.mph
+% Version:            COMSOL 6.2.0.290
+% Date:               Sep 25 2024, 00:30
+% Table:              Evaluation 3D - 交互的三维值
+% x                                               y                                                 z                                                 Value
+-4.6884195903373893E-7                            9.680608255706753                                 7.192074396644786                                 0.022586092806300063

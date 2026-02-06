@@ -1,0 +1,246 @@
+/**
+ * 练习详情样式
+ */
+@import '../../styles/variables.less';
+
+.exercise-detail-page {
+  min-height: 100vh;
+  background: @bg-color;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 进度 */
+.progress-header {
+  background: @white;
+  padding: @spacing-md;
+}
+
+.progress-bar {
+  height: 8px;
+  background: @border-color-light;
+  border-radius: @radius-full;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: @primary-color;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  text-align: right;
+}
+
+/* 题目 */
+.content-scroll {
+  flex: 1;
+  padding: @spacing-md;
+}
+
+.question-card {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+  margin-bottom: @spacing-md;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: @spacing-md;
+}
+
+.question-type {
+  display: inline-block;
+  padding: 4px 12px;
+  background: fade(@primary-color, 10%);
+  color: @primary-color;
+  border-radius: @radius-sm;
+  font-size: @font-size-sm;
+}
+
+/* 收藏按钮 */
+.favorite-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: @bg-color;
+  transition: all 0.2s ease;
+}
+
+.favorite-btn.loading {
+  opacity: 0.6;
+}
+
+.favorite-btn.favorited {
+  background: fade(#FFC107, 15%);
+}
+
+.favorite-icon {
+  font-size: 24px;
+  color: @text-color-placeholder;
+  line-height: 1;
+}
+
+.favorite-btn.favorited .favorite-icon {
+  color: #FFC107;
+}
+
+.question-text {
+  display: block;
+  font-size: @font-size-lg;
+  color: @text-color-primary;
+  line-height: 1.8;
+  margin-bottom: @spacing-lg;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-sm;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: @spacing-md;
+  background: @bg-color;
+  border-radius: @radius-md;
+  border: 2px solid transparent;
+}
+
+.option-item.selected {
+  border-color: @primary-color;
+  background: fade(@primary-color, 5%);
+}
+
+.option-text {
+  margin-left: @spacing-sm;
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+/* 解析 */
+.explanation-card {
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-lg;
+}
+
+.explanation-title {
+  display: block;
+  font-size: @font-size-base;
+  font-weight: 600;
+  color: @text-color-primary;
+  margin-bottom: @spacing-sm;
+}
+
+.explanation-text {
+  display: block;
+  font-size: @font-size-sm;
+  color: @text-color-secondary;
+  line-height: 1.8;
+}
+
+/* 底部按钮 */
+.footer-btn {
+  padding: @spacing-md;
+  background: @white;
+  border-top: 1px solid @border-color-light;
+}
+
+.btn {
+  height: 88px;
+  background: @primary-color;
+  color: @white;
+  border-radius: @radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: @font-size-lg;
+  font-weight: 600;
+}
+
+.btn.disabled {
+  background: @border-color;
+  color: @text-color-placeholder;
+}
+
+/* 结果页 */
+.result-page {
+  min-height: 100vh;
+  background: @bg-color;
+  padding: @spacing-xl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-card {
+  width: 100%;
+  background: @white;
+  border-radius: @radius-lg;
+  padding: @spacing-xl;
+  text-align: center;
+  margin-bottom: @spacing-xl;
+}
+
+.result-score {
+  display: block;
+  font-size: 120px;
+  font-weight: bold;
+  color: @primary-color;
+  line-height: 1;
+}
+
+.result-label {
+  display: block;
+  font-size: @font-size-lg;
+  color: @text-color-secondary;
+  margin-top: @spacing-sm;
+  margin-bottom: @spacing-lg;
+}
+
+.result-detail {
+  display: flex;
+  justify-content: center;
+  gap: @spacing-lg;
+}
+
+.detail-text {
+  font-size: @font-size-base;
+  color: @text-color-primary;
+}
+
+.result-actions {
+  display: flex;
+  gap: @spacing-md;
+  width: 100%;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @white;
+  color: @text-color-primary;
+  border-radius: @radius-md;
+  font-size: @font-size-base;
+  font-weight: 600;
+}
+
+.action-btn.primary {
+  background: @primary-color;
+  color: @white;
+}

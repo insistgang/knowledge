@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      position: relative;
+      width: 600px;
+      height: 600px;
+      margin: 50px auto;
+      background: #a8d5ff;
+      border-radius: 50%;
+    }
+    
+    .warehouse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 150px;
+      background: #666;
+      overflow: hidden;
+      z-index: 2;
+    }
+    
+    .warehouse-upper {
+      width: 100%;
+      height: 70%;
+      background: #888;
+      position: relative;
+    }
+    
+    .warehouse-windows {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    
+    .window {
+      width: 15px;
+      height: 20px;
+      background: #a8d5ff;
+      margin: 5px;
+    }
+    
+    .warehouse-stripe {
+      height: 20px;
+      background: #a8d5ff;
+      margin: 10px 0;
+    }
+    
+    .warehouse-door {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 40px;
+      background: #444;
+    }
+    
+    .boxes {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .box {
+      width: 20px;
+      height: 20px;
+      background: #e6a23c;
+      margin: 2px;
+      position: relative;
+    }
+    
+    .icon-circle {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 2;
+    }
+    
+    /* Position the 8 circular icons */
+    .icon-1 { top: 7%; left: 50%; transform: translateX(-50%); }
+    .icon-2 { top: 25%; right: 10%; }
+    .icon-3 { top: 50%; right: 5%; transform: translateY(-50%); }
+    .icon-4 { bottom: 25%; right: 10%; }
+    .icon-5 { bottom: 7%; left: 50%; transform: translateX(-50%); }
+    .icon-6 { bottom: 25%; left: 10%; }
+    .icon-7 { top: 50%; left: 5%; transform: translateY(-50%); }
+    .icon-8 { top: 25%; left: 10%; }
+    
+    /* Dashed circle connecting the icons */
+    .dashed-circle {
+      position: absolute;
+      width: 75%;
+      height: 75%;
+      top: 12.5%;
+      left: 12.5%;
+      border: 2px dashed #666;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    
+    /* Connecting lines to the central warehouse */
+    .icon-circle::before {
+      content: '';
+      position: absolute;
+      border-top: 2px dashed #666;
+      width: 100px;
+      height: 2px;
+      z-index: 0;
+    }
+    
+    .icon-1::before {
+      top: 50%;
+      left: 50%;
+      transform: rotate(90deg);
+      width: 80px;
+    }
+    
+    .icon-2::before {
+      top: 50%;
+      right: 50%;
+      transform: rotate(-45deg);
+      width: 120px;
+    }
+    
+    .icon-3::before {
+      top: 50%;
+      right: 100%;
+      width: 90px;
+    }
+    
+    .icon-4::before {
+      top: 50%;
+      right: 50%;
+      transform: rotate(45deg);
+      width: 120px;
+    }
+    
+    .icon-5::before {
+      bottom: 50%;
+      left: 50%;
+      transform: rotate(90deg);
+      width: 80px;
+    }
+    
+    .icon-6::before {
+      top: 50%;
+      left: 50%;
+      transform: rotate(45deg);
+      width: 120px;
+    }
+    
+    .icon-7::before {
+      top: 50%;
+      left: 100%;
+      width: 90px;
+    }
+    
+    .icon-8::before {
+      top: 50%;
+      left: 50%;
+      transform: rotate(-45deg);
+      width: 120px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="dashed-circle"></div>
+    
+    <div class="warehouse">
+      <div class="warehouse-upper">
+        <div class="warehouse-windows">
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+        </div>
+        <div class="warehouse-stripe"></div>
+        <div class="warehouse-windows">
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+          <div class="window"></div>
+        </div>
+      </div>
+      <div class="boxes">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+      </div>
+    </div>
+    
+    <div class="icon-circle icon-1">📦</div>
+    <div class="icon-circle icon-2">🚚</div>
+    <div class="icon-circle icon-3">📋</div>
+    <div class="icon-circle icon-4">🚢</div>
+    <div class="icon-circle icon-5">🏗️</div>
+    <div class="icon-circle icon-6">✈️</div>
+    <div class="icon-circle icon-7">📱</div>
+    <div class="icon-circle icon-8">🌍</div>
+  </div>
+</body>
+</html>

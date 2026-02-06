@@ -1,0 +1,68 @@
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspace*
+.trash/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary
+*.tmp
+*.swp
+*~
+
+# Build & cache
+node_modules/
+__pycache__/
+*.pyc
+dist/
+build/
+.vscode/
+.idea/
+
+# 大文件 - GitHub 限制 100MB
+*.mp4
+*.mp3
+*.wmv
+*.avi
+*.mov
+*.rar
+*.zip
+*.7z
+*.pth
+*.pt
+*.onnx
+*.weights
+*.exe
+*.psd
+*.csv
+
+# Office 文件
+*.pptx
+*.docx
+*.xls*
+
+# 数据集和模型
+**/data/
+**/datasets/
+**/weights/
+**/runs/
+**/output/
+**/benchmark/
+
+# 路径过长的文件夹
+04-Competitions/电子设计/
+
+# 大文件夹 - 课程资料、考试资料等
+06-Growth/Courses/
+06-Growth/Education/六级考试/
+06-Growth/Party/党支部/
+04-Competitions/行业分析/
+04-Competitions/人工智能/
+02-Thesis/Experiments/
+03-Projects/中电科50所/
+
+nul

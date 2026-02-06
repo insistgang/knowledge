@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反馈提交调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 2px solid #007bff; border-radius: 5px; }
+        .btn { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; max-height: 400px; }
+        .sample-stat { font-size: 24px; font-weight: bold; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>反馈提交调试页面</h1>
+
+    <div class="section">
+        <h2>1. 搜索客户</h2>
+        <input type="text" id="customerId" value="CDB91DCCE198B10A522FE2AABF6A8D81" style="width: 400px;">
+        <button class="btn" onclick="searchCustomer()">搜索客户</button>
+        <div id="searchResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. 提交反馈</h2>
+        <button class="btn" onclick="testFeedback()">提交测试反馈</button>
+        <div id="feedbackResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. 查看当前页面元素</h2>
+        <button class="btn" onclick="checkElements()">检查页面元素</button>
+        <div id="elementsResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. 样本统计显示</h2>
+        <div style="display: flex; gap: 30px;">
+            <div>
+                <div>总样本数</div>
+                <div class="sample-stat" id="totalSamples">0</div>
+            </div>
+            <div>
+                <div>正样本</div>
+                <div class="sample-stat" id="positiveSamples">0</div>
+            </div>
+            <div>
+                <div>负样本</div>
+                <div class="sample-stat" id="negativeSamples">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5. 调试日志</h2>
+        <pre id="debugLog"></pre>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentCustomer = null;
+        let debugLogData = [];
+
+        function log(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            debugLogData.push(`[${timestamp}] ${message}`);
+            if (data) {
+                debugLogData.push(JSON.stringify(data, null, 2));
+            }
+            document.getElementById('debugLog').textContent = debugLogData.join('\n\n');
+        }
+
+        async function searchCustomer() {
+            try {
+                log('开始搜索客户...');
+                const customerId = document.getElementById('customerId').value;
+                const response = await fetch(`${API_BASE}/api/customers/${customerId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentCustomer = data.customer;
+                    log('✓ 客户搜索成功', data);
+                    document.getElementById('searchResult').innerHTML = `
+                        <div class="success">✓ 客户找到: ${data.customer.cust_no}</div>
+                    `;
+                } else {
+                    throw new Error('客户不存在');
+                }
+            } catch (error) {
+                log('✗ 搜索失败', error.message);
+                document.getElementById('searchResult').innerHTML = `
+                    <div class="error">✗ ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testFeedback() {
+            if (!currentCustomer) {
+                alert('请先搜索客户');
+                return;
+            }
+
+            try {
+                log('开始提交反馈...');
+                log('客户ID:', currentCustomer.cust_no);
+
+                const feedbackData = {
+                    feedback: [{
+                        productId: 'SAVE_NEW_001',
+                        productName: '大额存单',
+                        feedback: 'interested'
+                    }]
+                };
+                log('提交数据:', feedbackData);
+
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.custNo}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(feedbackData)
+                });
+
+                const data = await response.json();
+                log('服务器响应:', data);
+
+                if (response.ok) {
+                    // 显示成功信息
+                    document.getElementById('feedbackResult').innerHTML = `
+                        <div class="success">✓ 反馈提交成功！</div>
+                        <p>样本数：${data.samples?.totalSamples || 0}</p>
+                        <p>正样本：${data.samples?.positiveSamples || 0}</p>
+                        <p>负样本：${data.samples?.negativeSamples || 0}</p>
+                    `;
+
+                    // 更新页面上的样本统计
+                    updateSampleStats(data);
+
+                } else {
+                    throw new Error(data.error || '提交失败');
+                }
+            } catch (error) {
+                log('✗ 提交失败', error.message);
+                document.getElementById('feedbackResult').innerHTML = `
+                    <div class="error">✗ ${error.message}</div>
+                `;
+            }
+        }
+
+        function updateSampleStats(data) {
+            log('开始更新样本统计...');
+
+            // 获取样本数据
+            const samples = data.samples || {};
+            log('样本数据:', samples);
+
+            // 获取页面元素
+            const totalEl = document.getElementById('totalSamples');
+            const positiveEl = document.getElementById('positiveSamples');
+            const negativeEl = document.getElementById('negativeSamples');
+
+            log('页面元素检查:');
+            log('  totalSamples 元素存在:', !!totalEl);
+            log('  positiveSamples 元素存在:', !!positiveEl);
+            log('  negativeSamples 元素存在:', !!negativeEl);
+
+            // 更新数值
+            if (totalEl) {
+                totalEl.textContent = samples.totalSamples || 0;
+                log(`✓ 总样本数更新为: ${samples.totalSamples || 0}`);
+            }
+            if (positiveEl) {
+                positiveEl.textContent = samples.positiveSamples || 0;
+                log(`✓ 正样本数更新为: ${samples.positiveSamples || 0}`);
+            }
+            if (negativeEl) {
+                negativeEl.textContent = samples.negativeSamples || 0;
+                log(`✓ 负样本数更新为: ${samples.negativeSamples || 0}`);
+            }
+
+            // 验证更新后的值
+            setTimeout(() => {
+                log('更新后的值验证:');
+                log(`  totalSamples 显示: ${totalEl?.textContent}`);
+                log(`  positiveSamples 显示: ${positiveEl?.textContent}`);
+                log(`  negativeSamples 显示: ${negativeEl?.textContent}`);
+            }, 100);
+        }
+
+        function checkElements() {
+            const elements = [
+                'totalSamples',
+                'positiveSamples',
+                'negativeSamples',
+                'accuracyImprovement'
+            ];
+
+            let html = '<h3>页面元素检查结果：</h3>';
+
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                html += `<p><strong>${id}:</strong> `;
+                if (el) {
+                    html += `<span class="success">✓ 存在，当前值="${el.textContent}"</span>`;
+                } else {
+                    html += `<span class="error">✗ 不存在</span>`;
+                }
+                html += `</p>`;
+            });
+
+            document.getElementById('elementsResult').innerHTML = html;
+            log('页面元素检查完成');
+        }
+
+        // 页面加载时检查元素
+        window.onload = function() {
+            log('页面加载完成，开始检查元素...');
+            checkElements();
+        };
+    </script>
+</body>
+</html>

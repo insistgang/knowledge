@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.container {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    margin: 50px auto;
+    background: #e6f3ff;
+    border-radius: 50%;
+}
+
+.warehouse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 150px;
+    background: #666;
+}
+
+.warehouse-upper {
+    width: 100%;
+    height: 60%;
+    background: #888;
+    position: relative;
+}
+
+.warehouse-windows {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.window {
+    width: 15px;
+    height: 15px;
+    background: #a8d5ff;
+    margin: 5px;
+}
+
+.warehouse-stripe {
+    height: 20px;
+    background: #a8d5ff;
+    margin: 10px 0;
+}
+
+.icon-circle {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: #a8d5ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 定位8个圆形图标 */
+.icon-1 { top: 10%; left: 50%; transform: translateX(-50%); }
+.icon-2 { top: 25%; right: 15%; }
+.icon-3 { top: 50%; right: 5%; transform: translateY(-50%); }
+.icon-4 { bottom: 25%; right: 15%; }
+.icon-5 { bottom: 10%; left: 50%; transform: translateX(-50%); }
+.icon-6 { bottom: 25%; left: 15%; }
+.icon-7 { top: 50%; left: 5%; transform: translateY(-50%); }
+.icon-8 { top: 25%; left: 15%; }
+
+/* 添加虚线连接 */
+.container::before {
+    content: '';
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+    border: 2px dashed #666;
+    border-radius: 50%;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="warehouse">
+        <div class="warehouse-upper">
+            <div class="warehouse-windows">
+                <div class="window"></div>
+                <div class="window"></div>
+                <div class="window"></div>
+                <div class="window"></div>
+                <div class="window"></div>
+            </div>
+            <div class="warehouse-stripe"></div>
+        </div>
+    </div>
+    
+    <div class="icon-circle icon-1">📦</div>
+    <div class="icon-circle icon-2">🚚</div>
+    <div class="icon-circle icon-3">📋</div>
+    <div class="icon-circle icon-4">🚢</div>
+    <div class="icon-circle icon-5">🏗</div>
+    <div class="icon-circle icon-6">✈️</div>
+    <div class="icon-circle icon-7">📱</div>
+    <div class="icon-circle icon-8">🌍</div>
+</div>
+</body>
+</html>

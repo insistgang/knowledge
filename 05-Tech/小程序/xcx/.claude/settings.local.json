@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:weapp:*)",
+      "Bash(dir:*)",
+      "Bash(powershell -Command \"Set-Content -Path ''c:\\\\Users\\\\Administrator\\\\Desktop\\\\code\\\\xcx\\\\cloudfunctions\\\\login\\\\index.js'' -Value @''\n/**\n * 登录云函数\n * 功能：微信登录、用户注册\n */\nconst cloud = require\\(''wx-server-sdk''\\)\n\ncloud.init\\({\n  env: cloud.DYNAMIC_CURRENT_ENV\n}\\)\n\nconst db = cloud.database\\(\\)\n\nexports.main = async \\(event, context\\) => {\n  const { action, code, openid, nickname, avatar } = event\n\n  try {\n    switch \\(action\\) {\n      case ''login'':\n        return await handleLogin\\(code\\)\n      case ''register'':\n        return await handleRegister\\(openid, nickname, avatar\\)\n      default:\n        return { success: false, message: ''未知操作'' }\n    }\n  } catch \\(err\\) {\n    return {\n      success: false,\n      message: err.message || ''操作失败''\n    }\n  }\n}\n\nasync function handleLogin\\(code\\) {\n  const wxResult = await cloud.getOpenId\\({ code }\\)\n  const openid = wxResult.openid\n\n  if \\(!openid\\) {\n    return { success: false, message: ''获取 openid 失败'' }\n  }\n\n  const userRes = await db.collection\\(''users''\\).where\\({ openid }\\).get\\(\\)\n  const user = userRes.data[0]\n\n  if \\(!user\\) {\n    return {\n      success: true,\n      data: { openid, needRegister: true }\n    }\n  }\n\n  return {\n    success: true,\n    data: {\n      openid,\n      user: {\n        id: user._id,\n        nickname: user.nickname,\n        avatar: user.avatar,\n        vipExpire: user.vipExpire\n      },\n      token: generateToken\\(openid\\)\n    }\n  }\n}\n\nasync function handleRegister\\(openid, nickname, avatar\\) {\n  if \\(!openid || !nickname\\) {\n    return { success: false, message: ''参数不完整'' }\n  }\n\n  const now = new Date\\(\\)\n  const result = await db.collection\\(''users''\\).add\\({\n    data: {\n      openid, nickname, avatar,\n      vipLevel: 0, vipExpire: null,\n      studyDays: 0, totalScore: 0,\n      createdAt: now, updatedAt: now\n    }\n  }\\)\n\n  return {\n    success: true,\n    data: { id: result._id, openid, nickname, avatar, vipLevel: 0 }\n  }\n}\n\nfunction generateToken\\(openid\\) {\n  return Buffer.from\\(openid + '':'' + Date.now\\(\\) + '':'' + Math.random\\(\\).toString\\(36\\).substring\\(2\\)\\).toString\\(''base64''\\)\n}\n''@\")",
+      "Bash(powershell:*)",
+      "Bash(chcp:*)",
+      "Bash(del:*)",
+      "Bash(printf:*)",
+      "Bash(grep:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(tree:*)",
+      "Bash(cd:*)",
+      "Bash(npm run dev:weapp:*)",
+      "Bash(ls:*)",
+      "Bash(findstr:*)",
+      "Bash(timeout 60 npm run dev:weapp:*)",
+      "Bash(set NODE_ENV=production:*)",
+      "Bash(timeout:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}

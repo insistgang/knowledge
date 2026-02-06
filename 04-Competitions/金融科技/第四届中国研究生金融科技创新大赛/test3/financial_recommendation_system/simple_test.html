@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>简单测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .info { background: #f0f8ff; padding: 10px; margin: 10px 0; }
+        .success { background: #d4edda; color: #155724; padding: 10px; }
+        .error { background: #f8d7da; color: #721c24; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>智能推荐系统 - 简单测试</h1>
+
+    <div class="section">
+        <h2>1. 搜索客户</h2>
+        <input type="text" id="customerId" value="CDB91DCCE198B10A522FE2AABF6A8D81" style="width: 400px;">
+        <button class="btn" onclick="searchCustomer()">搜索客户</button>
+        <div id="searchResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>2. 客户画像与投资建议</h2>
+        <div id="profileInfo"></div>
+    </div>
+
+    <div class="section">
+        <h2>3. 推荐产品</h2>
+        <div id="recommendations"></div>
+    </div>
+
+    <div class="section">
+        <h2>4. 提交反馈</h2>
+        <button class="btn" onclick="submitFeedback()">提交测试反馈</button>
+        <div id="feedbackResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>5. 优化推荐（第二步）</h2>
+        <button class="btn" onclick="getOptimizedRecommendations()">获取优化推荐</button>
+        <div id="optimizedResult"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentCustomer = null;
+
+        // 搜索客户
+        async function searchCustomer() {
+            const customerId = document.getElementById('customerId').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/customers/${customerId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentCustomer = data.customer;
+
+                    // 显示搜索结果
+                    document.getElementById('searchResult').innerHTML = `
+                        <div class="success">✓ 成功获取客户数据</div>
+                    `;
+
+                    // 显示客户画像和投资建议
+                    updateProfile(data);
+
+                    // 显示推荐产品
+                    updateRecommendations(data.recommendations);
+                } else {
+                    throw new Error('客户不存在');
+                }
+            } catch (error) {
+                document.getElementById('searchResult').innerHTML = `
+                    <div class="error">✗ 错误：${error.message}</div>
+                `;
+            }
+        }
+
+        // 更新客户画像
+        function updateProfile(data) {
+            const customer = data.customer;
+            const insight = data.customerInsight || {};
+
+            document.getElementById('profileInfo').innerHTML = `
+                <div class="info">
+                    <h3>客户信息</h3>
+                    <p><strong>客户ID：</strong> ${customer.cust_no}</p>
+                    <p><strong>年龄：</strong> ${customer.age}岁</p>
+                    <p><strong>性别：</strong> ${customer.gender === 'M' ? '男' : '女'}</p>
+                    <p><strong>教育背景：</strong> ${customer.edu_bg}</p>
+                    <p><strong>客户价值：</strong> ${customer.isHighValue ? '高价值' : '普通'}</p>
+
+                    <h4>投资建议</h4>
+                    <p><strong>风险偏好：</strong> ${insight.riskLevel || '未评估'}</p>
+                    <p><strong>适合类别：</strong> ${insight.suitableCategories?.join(', ') || '未指定'}</p>
+                    <p><strong>投资能力：</strong> ${insight.investmentCapacity || '未评估'}</p>
+                    <p><strong>建议：</strong> ${insight.recommendation || '暂无建议'}</p>
+                </div>
+            `;
+        }
+
+        // 更新推荐产品
+        function updateRecommendations(recommendations) {
+            if (!recommendations || recommendations.length === 0) {
+                document.getElementById('recommendations').innerHTML = '<p>暂无推荐</p>';
+                return;
+            }
+
+            const html = recommendations.map((product, index) => `
+                <div class="info">
+                    <h4>${product.name} ${product.matchScore ? `(匹配度: ${product.matchScore}%)` : ''}</h4>
+                    <p><strong>类别：</strong> ${product.category}</p>
+                    <p><strong>风险等级：</strong> ${product.riskLevel}</p>
+                    <p><strong>特点：</strong> ${product.features?.join(', ') || ''}</p>
+                    <p><strong>推荐理由：</strong> ${product.matchReason || '系统推荐'}</p>
+                    <button class="btn" onclick="selectProduct(${index}, 'interested')">感兴趣</button>
+                    <button class="btn" onclick="selectProduct(${index}, 'not_interested')">不感兴趣</button>
+                </div>
+            `).join('');
+
+            document.getElementById('recommendations').innerHTML = html;
+        }
+
+        // 选择产品反馈
+        function selectProduct(index, feedback) {
+            if (!currentCustomer) {
+                alert('请先搜索客户');
+                return;
+            }
+
+            const product = currentCustomer.recommendations ? currentCustomer.recommendations[index] : null;
+            if (!product) {
+                alert('产品信息未找到');
+                return;
+            }
+
+            submitFeedbackForProduct(product.id, product.name, feedback);
+        }
+
+        // 提交反馈
+        async function submitFeedback() {
+            if (!currentCustomer) {
+                alert('请先搜索客户');
+                return;
+            }
+
+            // 提交第一个产品的测试反馈
+            submitFeedbackForProduct('SAVE_NEW_001', '大额存单', 'interested');
+        }
+
+        // 提交产品反馈
+        async function submitFeedbackForProduct(productId, productName, feedback) {
+            try {
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.cust_no}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        feedback: [{
+                            productId: productId,
+                            productName: productName,
+                            feedback: feedback
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('feedbackResult').innerHTML = `
+                        <div class="success">✓ 反馈提交成功！</div>
+                        <p>样本数量：${data.samples?.totalSamples || 0}</p>
+                        <p>正样本：${data.samples?.positiveSamples || 0}</p>
+                        <p>负样本：${data.samples?.negativeSamples || 0}</p>
+                    `;
+                } else {
+                    throw new Error('提交失败');
+                }
+            } catch (error) {
+                document.getElementById('feedbackResult').innerHTML = `
+                    <div class="error">✗ 提交失败：${error.message}</div>
+                `;
+            }
+        }
+
+        // 获取优化推荐
+        async function getOptimizedRecommendations() {
+            if (!currentCustomer) {
+                alert('请先搜索客户并提交反馈');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.custNo}/next-recommendations`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    const products = data.recommendedProducts || [];
+
+                    document.getElementById('optimizedResult').innerHTML = `
+                        <div class="success">✓ 获取优化推荐成功！</div>
+                        <h3>第二步：优化推荐结果</h3>
+                        <p><strong>推荐策略：</strong> ${data.nextStep}</p>
+                        <p><strong>置信度：</strong> ${data.confidence}</p>
+                        <h4>推荐产品：</h4>
+                        ${products.map(p => `
+                            <div class="info">
+                                <h5>${p.name} (匹配度: ${p.matchScore}%)</h5>
+                                <p><strong>类别：</strong> ${p.category}</p>
+                                <p><strong>理由：</strong> ${p.matchReason}</p>
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    throw new Error('获取失败');
+                }
+            } catch (error) {
+                document.getElementById('optimizedResult').innerHTML = `
+                    <div class="error">✗ 获取失败：${error.message}</div>
+                `;
+            }
+        }
+
+        // 页面加载时自动搜索
+        window.onload = function() {
+            searchCustomer();
+        };
+    </script>
+</body>
+</html>

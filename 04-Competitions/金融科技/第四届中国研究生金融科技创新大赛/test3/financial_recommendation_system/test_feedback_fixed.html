@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试反馈提交修复</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .result { margin-top: 10px; padding: 10px; background: #f0f0f0; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>测试反馈提交修复</h1>
+
+    <div class="test-section">
+        <h2>测试客户ID</h2>
+        <input type="text" id="customerId" value="CDB91DCCE198B10A522FE2AABF6A8D81" style="width: 300px;">
+        <button onclick="testLoadCustomer()">加载客户</button>
+        <div id="customerResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>测试反馈提交</h2>
+        <button onclick="testFeedbackSubmission()">测试提交反馈</button>
+        <div id="feedbackResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let currentCustomer = null;
+        let currentRecommendations = [];
+
+        async function testLoadCustomer() {
+            const customerId = document.getElementById('customerId').value;
+            const resultDiv = document.getElementById('customerResult');
+
+            try {
+                resultDiv.innerHTML = '正在加载客户数据...';
+
+                const response = await fetch(`${API_BASE}/api/customers/${customerId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentCustomer = data.customer;
+                    currentRecommendations = data.recommendations || [];
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            成功加载客户数据！<br>
+                            客户ID: ${currentCustomer.cust_no}<br>
+                            年龄: ${currentCustomer.age || '-'}<br>
+                            推荐产品数: ${currentRecommendations.length}
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || '加载失败');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">错误: ${error.message}</div>`;
+            }
+        }
+
+        async function testFeedbackSubmission() {
+            const resultDiv = document.getElementById('feedbackResult');
+
+            if (!currentCustomer || currentRecommendations.length === 0) {
+                resultDiv.innerHTML = '<div class="error">请先加载客户数据</div>';
+                return;
+            }
+
+            try {
+                // 创建测试反馈数据
+                const testProduct = currentRecommendations[0];
+                const feedbackData = {
+                    feedback: [{
+                        productId: testProduct.id || testProduct.product_id,
+                        productName: testProduct.name || testProduct.productName || '测试产品',
+                        feedback: 'interested'
+                    }]
+                };
+
+                resultDiv.innerHTML = '正在提交反馈...';
+
+                const response = await fetch(`${API_BASE}/api/customers/${currentCustomer.cust_no}/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(feedbackData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            反馈提交成功！<br>
+                            样本总数: ${data.samples?.totalSamples || 0}<br>
+                            正样本: ${data.samples?.positiveSamples || 0}<br>
+                            负样本: ${data.samples?.negativeSamples || 0}
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.error || '提交失败');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">错误: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
