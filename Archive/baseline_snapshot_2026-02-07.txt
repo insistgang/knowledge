@@ -1,0 +1,82 @@
+# 知识库基线数据快照
+
+**快照时间**: 2026-02-07
+**验证员**: validator
+
+---
+
+## 一、空间统计
+
+| 模块 | 大小 |
+|------|------|
+| 总计 | 34G |
+| 00-Inbox | 313M |
+| 01-Daily | 321K |
+| 02-Thesis | 11G |
+| 03-Projects | 11G |
+| 04-Competitions | 6.2G |
+| 05-Tech | 56M |
+| 06-Growth | 5.7G |
+| 07-Resources | 6.0K |
+| Attachments | 1.0K |
+
+**Markdown文件总数**: 798个
+
+---
+
+## 二、待验证操作清单
+
+| 操作 | 状态 | 验证方法 |
+|------|------|----------|
+| 创建 MOC-论文地图.md | 已标记完成 | 检查文件存在 + Frontmatter |
+| 重命名 体重管理管.md → 体重管理.md | 已标记完成 | 检查文件名 + 链接有效性 |
+| 补全 使用心得.md | 已标记完成 | 检查内容 + Frontmatter |
+| 移动 node_modules 到 Quarantine | 已标记完成 | 检查 Quarantine 目录 |
+| 移动 faceai-master2 到 Quarantine | 已标记完成 | 检查 Quarantine 目录 |
+| 移动旧届竞赛到 Quarantine | 已标记完成 | 检查 Quarantine 目录 |
+
+---
+
+## 三、验证命令
+
+### 空间释放验证
+```bash
+cd /e/000/knowledge
+du -sh .
+du -sh Quarantine/
+```
+
+### 链接验证
+```bash
+# 检查体重管理链接
+ls -la 06-Growth/Health/体重管理*.md
+grep -r "\[\[体重管理\]\]" --include="*.md"
+
+# 检查MOC文件
+ls -la 02-Thesis/MOC-*.md
+head -n 15 02-Thesis/MOC-论文地图.md
+```
+
+### 文件完整性验证
+```bash
+# 检查使用心得
+wc -l 05-Tech/Tools/Claude-Code/使用心得.md
+head -n 15 05-Tech/Tools/Claude-Code/使用心得.md
+
+# 检查Quarantine
+ls -R Quarantine/
+```
+
+---
+
+## 四、预期结果
+
+- MOC-论文地图.md 存在于 02-Thesis/，包含正确 Frontmatter
+- 体重管理.md 存在，旧名不再存在
+- 使用心得.md 内容完整，有 Frontmatter
+- Quarantine/ 包含被移动的文件
+- 知识库总大小减少（预估释放 150-200MB）
+
+---
+
+**备注**: 此文件将作为操作前后对比的基准。

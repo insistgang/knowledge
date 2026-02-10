@@ -22,7 +22,21 @@
       "Bash(git config:*)",
       "Bash(git fetch:*)",
       "Bash(git rm:*)",
-      "Bash(git remote add:*)"
+      "Bash(git remote add:*)",
+      "Bash(git -C \"E:/000/knowledge\" log --all --date=short --pretty=format:\"%ad %s\" --since=\"2020-01-01\")",
+      "Bash(done)",
+      "Bash(echo:*)",
+      "Bash(git mv:*)",
+      "Bash(if:*)",
+      "Bash(then echo \"存在 faceai-master2\")",
+      "Bash(else echo \"faceai-master2 不存在\")",
+      "Bash(fi)",
+      "Bash(then echo \"存在第七届竞赛目录\")",
+      "Bash(else echo \"第七届竞赛目录不存在\")",
+      "Bash(else echo \"MOC-论文地图.md 不存在\")",
+      "WebSearch",
+      "Bash(iconv:*)",
+      "Bash(node:*)"
     ]
   }
 }

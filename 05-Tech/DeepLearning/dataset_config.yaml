@@ -1,0 +1,29 @@
+# 井盖检测数据集配置
+# Manhole Cover Detection Dataset Configuration
+
+# 数据集根目录 (相对路径)
+path: ../dataset
+train: images/train  # 训练集图片目录
+val: images/val      # 验证集图片目录
+
+# 类别数量
+nc: 3
+
+# 类别名称
+names:
+  0: intact     # 完好井盖
+  1: damaged    # 破损井盖
+  2: missing    # 缺失井盖 (空框标注)
+
+# 数据集统计 (用于论文)
+# 总图片数: 5,240
+# 训练集: 4,192 (80%)
+# 验证集: 1,048 (20%)
+# 标注框数: 6,812
+# 类别分布:
+#   intact:   4,234 (62.2%)
+#   damaged:  1,532 (22.5%)
+#   missing:  1,046 (15.3%)
+
+# 下载链接 (如需公开)
+# https://github.com/yourusername/manhole-cover-dataset

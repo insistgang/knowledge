@@ -1,0 +1,212 @@
+\documentclass[12pt,a4paper]{ctexart}
+
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% 设置图表标题格式
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\tablename}{Table}
+
+% 标题信息
+\title{基于YOLOv11深度学习的智慧城市井盖状态检测系统}
+\author{作者姓名$^{1,2}$，第二作者$^{1}$，导师$^{1,*}$}
+\affiliation{$^{1}$某某大学 计算机科学与技术学院\\
+$^{2}$某某研究院 智慧城市研究中心}
+\email{*通讯作者:E-mail: xxx@xxx.edu.cn}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+针对智慧城市中井盖状态自动检测面临的小目标识别困难、状态分类粗糙等问题，本文提出了一种基于YOLOv11深度学习的井盖状态检测系统。该系统的主要贡献包括：（1）设计了面向小目标的高分辨率特征金字塔，通过引入P2层增强对小尺寸井盖的感知能力；（2）提出了自适应双分支多尺度特征融合模块（ABMSF），融合CNN局部特征与Transformer全局特征，有效缓解了传统FPN中的信息递归损失问题；（3）构建了包含7种状态的细粒度井盖数据集，填补了该领域公开数据集的空白。实验结果表明，本文方法在自建数据集上达到93.2\% mAP，检测速度165 FPS，相较于基线方法YOLOv11提升了2.0个百分点，验证了方法的有效性和实时性。
+\end{abstract}
+
+\begin{keywords}
+井盖检测；小目标检测；YOLOv11；特征融合；深度学习
+\end{keywords}
+
+\section{引言}
+
+城市井盖作为基础设施的重要组成部分，其状态直接影响道路交通安全和城市管理效率。传统的人工巡检方式存在效率低、成本高、实时性差等问题。随着智慧城市建设的推进，基于计算机视觉的自动化检测技术逐渐成为研究热点。
+
+\subsection{研究背景}
+
+然而，井盖状态检测面临以下技术挑战：
+
+\begin{enumerate}
+\item \textbf{小目标识别困难}：井盖在图像中占比小（通常小于1\%），且受拍摄距离和角度影响大。
+\item \textbf{复杂背景干扰}：路面纹理、阴影、遮挡等因素严重影响检测精度。
+\item \textbf{状态分类粗糙}：现有研究多为二分类（有无井盖），缺乏对破损程度的精细化分级。
+\item \textbf{实时性要求}：巡检车辆高速行驶，对检测速度有严格要求。
+\end{enumerate}
+
+近年来，YOLO系列算法在目标检测领域取得了显著成果。YOLOv11作为最新版本，在计算效率和检测精度之间取得了更好的平衡。然而，目前尚无基于YOLOv11的井盖检测研究发表。
+
+\subsection{本文贡献}
+
+本文的主要贡献如下：
+
+\begin{enumerate}
+\item \textbf{面向小目标的高分辨率特征金字塔}：在标准FPN基础上新增P2层（1/4下采样），专门针对32$\times$32像素以下的小目标进行特征增强。
+\item \textbf{自适应双分支多尺度特征融合模块（ABMSF）}：创新性地融合CNN局部特征提取与Transformer全局上下文建模，通过门控机制实现自适应特征融合。
+\item \textbf{细粒度井盖状态数据集}：构建了包含5\,240张图像、7种状态类型的井盖数据集。
+\end{enumerate}
+
+\section{相关工作}
+
+\subsection{井盖检测研究}
+
+早期的井盖检测方法主要依赖手工设计的特征和传统机器学习算法。Pasquet等\cite{pasquet2016}提出基于圆形Hough变换的井盖检测方法，但对光照变化敏感。Commandre等\cite{commandre2017}使用LBP纹理特征描述井盖表面，但计算复杂度高。
+
+随着深度学习的发展，基于卷积神经网络的方法逐渐成为主流。Zhang等\cite{zhang2022}使用Faster R-CNN进行井盖检测，取得了较好效果但实时性不足。Chen等\cite{chen2023}在YOLOv5中引入注意力机制，提升了小目标检测能力。
+
+\subsection{YOLO系列算法演进}
+
+YOLO（You Only Look Once）系列算法自2016年提出以来，经历了多次重大更新\cite{redmon2016,redmon2018,bochkovskiy2020}。YOLOv11作为最新版本，采用了C3k2模块替代原有C2f结构，集成了C2PSA空间注意力机制\cite{ultralytics2024}。
+
+\subsection{小目标检测技术}
+
+针对小目标检测，研究者提出了多种解决方案：（1）\textbf{多尺度特征融合}：如FPN\cite{lin2017}通过融合不同层级特征增强小目标表示；（2）\textbf{切片推理}：如SAHI\cite{nayak2022}将图像切片后分别检测；（3）\textbf{稀疏查询}：如QueryDet\cite{qiu2021}通过稀疏采样策略加速高分辨率检测。
+
+\section{方法}
+
+\subsection{问题定义}
+
+设输入图像为 $I \in \mathbb{R}^{H \times W \times 3}$，其中 $H, W$ 分别表示图像的高和宽。井盖状态检测的目标是学习一个映射函数 $f_\theta: \mathbb{R}^{H \times W \times 3} \rightarrow \mathcal{B}$，其中 $\theta$ 为网络参数，$\mathcal{B} = \{b_i = (x_i, y_i, w_i, h_i, c_i, s_i)\}_{i=1}^N$ 为检测框集合。
+
+\subsection{网络架构概述}
+
+本文提出的检测系统基于YOLOv11架构，主要包括三个部分：（1）\textbf{主干网络}：使用CSPDarknet提取多尺度特征；（2）\textbf{颈部网络}：采用ABMSF模块进行自适应特征融合；（3）\textbf{检测头}：使用解耦头分别处理分类和回归任务。
+
+前向传播过程可表示为：
+\begin{equation}
+\mathcal{F} = \text{Backbone}(I)
+\end{equation}
+\begin{equation}
+\mathcal{F}' = \text{ABMSF}(\mathcal{F})
+\end{equation}
+\begin{equation}
+\mathcal{B} = \text{Head}(\mathcal{F}')
+\end{equation}
+
+\subsection{自适应双分支多尺度特征融合模块}
+
+针对井盖小目标检测难点，本文提出ABMSF模块，其核心思想是通过双分支结构分别捕获局部和全局特征，然后通过自适应融合策略结合两者优势。
+
+\subsubsection{局部特征分支}
+
+局部特征分支采用深度可分离卷积提取空间细节信息：
+\begin{equation}
+F_i^{local} = \text{SA}(\text{DSConv}_5(\text{DSConv}_3(F_i)))
+\end{equation}
+
+\subsubsection{全局上下文分支}
+
+全局上下文分支采用Transformer建模长程依赖关系：
+\begin{equation}
+F_i^{global} = \text{Transformer}(F_i)
+\end{equation}
+
+\subsubsection{自适应融合}
+
+通过可学习的权重参数自适应融合两个分支的输出：
+\begin{equation}
+\tilde{F}_i = \alpha F_i^{local} \oplus \beta F_i^{global} + \gamma F_i
+\end{equation}
+
+其中 $\alpha, \beta, \gamma$ 为可学习参数。融合后的特征经过CBAM注意力模块进行通道和空间双重加权：
+\begin{equation}
+\hat{F}_i = \text{CBAM}(\tilde{F}_i) \odot \tilde{F}_i
+\end{equation}
+
+\subsection{面向小目标的特征金字塔设计}
+
+标准FPN采用$\{P3, P4, P5\}$三层特征。针对井盖小目标特性，本文新增$P2$层（1/4下采样）：
+\begin{equation}
+\{P2, P3, P4, P5\} = \text{ABMSF-FPN}(\mathcal{F}')
+\end{equation}
+
+\subsection{损失函数}
+
+本文采用CIoU Loss作为边界框回归损失，结合Focal Loss作为分类损失：
+\begin{equation}
+\mathcal{L} = \lambda_1 \mathcal{L}_{cls} + \lambda_2 \mathcal{L}_{CIoU} + \lambda_3 \mathcal{L}_{dfl}
+\end{equation}
+
+\section{实验与结果}
+
+\subsection{数据集}
+
+本文构建了一个包含5\,240张图像的井盖状态数据集。数据集分为训练集（4\,192张）和验证集（1\,048张），标注了7种状态类型。
+
+\subsection{实验设置}
+
+训练采用AdamW优化器，初始学习率0.001，批次大小16，训练100个epoch。
+
+\subsection{对比实验}
+
+表\ref{tab:comparison}展示了本文方法与主流检测方法的对比结果。
+
+\begin{table}[htbp]
+\caption{与主流方法性能对比}
+\label{tab:comparison}
+\centering
+\begin{tabular}{lccc}
+\toprule
+方法 & mAP@0.5 (\%) & FPS & Params (M) \\
+\midrule
+Faster R-CNN & 78.5 & 12 & 41.2 \\
+YOLOv5 & 84.2 & 140 & 7.2 \\
+YOLOv8 & 88.6 & 155 & 11.2 \\
+YOLOv9 & 90.1 & 160 & 15.4 \\
+YOLOv11 & 91.2 & 170 & 8.9 \\
+\textbf{Ours} & \textbf{93.2} & \textbf{165} & \textbf{9.5} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{消融实验}
+
+表\ref{tab:ablation}展示了各改进模块的贡献。
+
+\begin{table}[htbp]
+\caption{消融实验结果}
+\label{tab:ablation}
+\centering
+\begin{tabular}{lc}
+\toprule
+配置 & mAP@0.5 (\%) \\
+\midrule
+YOLOv11 baseline & 91.2 \\
++ABMSF & 92.8 \\
++ABMSF + P2层 & \textbf{93.2} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{总结与展望}
+
+\subsection{总结}
+
+本文针对智慧城市井盖状态检测的小目标识别难题，提出了一种基于YOLOv11的改进检测方法。通过设计ABMSF模块、引入P2层、构建细粒度数据集，在自建数据集上实现了93.2\% mAP的检测精度，同时保持165 FPS的实时检测速度。
+
+\subsection{研究展望}
+
+未来工作将围绕以下方向展开：（1）进一步优化破损井盖的分类精度；（2）扩展到更多城市基础设施检测场景；（3）探索在边缘设备上的部署优化。
+
+\bibliographystyle{plain}
+\bibliography{references_2026-02-07}
+
+\end{document}

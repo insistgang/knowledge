@@ -1,0 +1,16 @@
+=== 基线数据快照 2026-02-07 ===
+34G	.
+
+=== 各模块大小 ===
+313M	00-Inbox/
+321K	01-Daily/
+11G	02-Thesis/
+11G	03-Projects/
+6.2G	04-Competitions/
+56M	05-Tech/
+5.7G	06-Growth/
+6.0K	07-Resources/
+1.0K	Attachments/
+
+=== Markdown文件计数 ===
+798
